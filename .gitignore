@@ -3,6 +3,9 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+.embedding-cache/
+.hf-cache/
+.sentence-transformers/
 
 # Environment
 .env
