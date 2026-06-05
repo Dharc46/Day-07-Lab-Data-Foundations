@@ -1,5 +1,7 @@
 pytest>=7.0
 python-dotenv>=1.0
+sentence-transformers>=5.5
+python-certifi-win32>=1.6; platform_system == "Windows"
 
 # Optional manual-demo extras
 # Install local embedder support with:
@@ -8,7 +10,6 @@ python-dotenv>=1.0
 #   pip install openai
 # Install both optional embedders with:
 #   pip install openai sentence-transformers
-# sentence-transformers>=3.0
 # openai>=1.0
 
 # Optional: for bonus tasks

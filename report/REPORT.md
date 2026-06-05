@@ -1,7 +1,7 @@
 # Bao Cao Lab 7: Embedding & Vector Store
 
 **Ho ten:** Nguyen Thanh Dat  
-**Nhom:** AI Restaurant Chooser for Groups  
+**Nhom:** Vietnamese Digital Law RAG  
 **Ngay:** 2026-06-05
 
 ---
@@ -10,29 +10,26 @@
 
 ### Cosine Similarity
 
-Cosine similarity do muc do cung huong giua hai vector embedding. Trong RAG, query va chunk co cosine similarity cao khi chung noi ve cung y dinh hoac cung chu de, du cau chu co the khac nhau.
+Cosine similarity do muc do cung huong giua hai embedding vectors. Trong retrieval, query va chunk co cosine similarity cao khi chung noi ve cung mot noi dung phap ly, vi du cung hoi ve "quyen cua chu the du lieu" hoac "hanh vi bi nghiem cam".
 
-**Vi du HIGH similarity:**
-- Sentence A: "Find a cheap Korean restaurant for a group dinner."
-- Sentence B: "Recommend a low-budget Korean place suitable for five people."
-- Ly do: ca hai deu noi ve mon Han, ngan sach thap, va an theo nhom.
+**High similarity:**
+- A: "Chu the du lieu ca nhan co quyen yeu cau xoa du lieu khong?"
+- B: "Quyen cua chu the du lieu ca nhan bao gom yeu cau cung cap, xoa, han che xu ly du lieu."
+- Ly do: ca hai deu noi ve quyen cua chu the du lieu ca nhan.
 
-**Vi du LOW similarity:**
-- Sentence A: "Find a vegetarian restaurant near school."
-- Sentence B: "Explain how vector databases store embeddings."
-- Ly do: mot cau hoi ve chon quan an, cau kia ve ky thuat vector store.
+**Low similarity:**
+- A: "Bien phap bao ve an ninh mang gom nhung gi?"
+- B: "Hop dong dien tu duoc giao ket theo nguyen tac nao?"
+- Ly do: mot cau thuoc an ninh mang, cau kia thuoc giao dich dien tu.
 
-Cosine similarity duoc uu tien hon Euclidean distance cho text embeddings vi no tap trung vao huong cua vector, phu hop voi y nghia/nguyen tac semantic similarity. Do lon vector co the bi anh huong boi model hoac normalization, nen khoang cach Euclidean khong phai luc nao cung phan anh muc do lien quan.
+Cosine similarity phu hop voi text embeddings vi no tap trung vao huong cua vector, tuc y nghia tuong doi, thay vi do dai tuyet doi cua vector. Euclidean distance co the bi anh huong boi scale va khong on dinh bang khi embedding da duoc normalize.
 
 ### Chunking Math
 
-Document dai 10,000 ky tu, `chunk_size=500`, `overlap=50`.
-
-Cong thuc:
+Document dai 10,000 ky tu, `chunk_size=500`, `overlap=50`:
 
 ```text
-num_chunks = ceil((doc_length - overlap) / (chunk_size - overlap))
-           = ceil((10000 - 50) / (500 - 50))
+num_chunks = ceil((10000 - 50) / (500 - 50))
            = ceil(9950 / 450)
            = 23
 ```
@@ -45,84 +42,85 @@ num_chunks = ceil((10000 - 100) / (500 - 100))
            = 25
 ```
 
-Overlap lon hon lam tang so chunk vi buoc nhay nho hon. Doi lai, overlap giup giu ngu canh o ranh gioi giua hai chunk, dac biet khi thong tin quan trong bi nam gan diem cat.
+Overlap lon hon lam tang so chunk, nhung giup giu ngu canh quanh ranh gioi cat, rat huu ich voi van ban phap luat vi mot khoan/dieu co the bi tach ngang.
 
 ---
 
 ## 2. Document Selection - Nhom
 
-**Domain:** AI Restaurant Chooser for Groups.
+**Domain:** Vietnamese digital law and personal data protection RAG.
 
-Nhom chon domain nay vi bai toan chon quan an theo nhom can dung ca semantic search va metadata filtering. Nguoi dung thuong hoi bang ngon ngu tu nhien nhu "quan nao ngoi lau duoc" hoac "nhom co nguoi an chay", trong khi du lieu can co truong co cau truc nhu khu vuc, gia, cuisine, group_friendly.
-
-Dataset duoi day la **mock/synthetic dataset** dung cho lab, mo phong du lieu that nhung khong phai thong tin kinh doanh thuc te.
+Nhom chon bo van ban phap luat dang Markdown trong file `md.zip`. Domain nay phu hop voi RAG vi nguoi dung thuong hoi theo ngon ngu tu nhien, trong khi cau tra loi can duoc grounding vao dieu/khoan cua van ban nguon. Bo du lieu co 5 van ban ve bao ve du lieu ca nhan, an ninh mang, va giao dich dien tu.
 
 ### Data Inventory
 
-| # | Ten tai lieu | Nguon | So ky tu | Metadata da gan |
-|---|--------------|-------|----------|-----------------|
-| 1 | Pho Harmony | synthetic | 209 | district, price_level, group_friendly, cuisine, dietary_options, source, updated_at |
-| 2 | Seoul Corner | synthetic | 206 | district, price_level, group_friendly, cuisine, dietary_options, source, updated_at |
-| 3 | Green Table | synthetic | 219 | district, price_level, group_friendly, cuisine, dietary_options, source, updated_at |
-| 4 | Bistro Late | synthetic | 194 | district, price_level, group_friendly, cuisine, dietary_options, source, updated_at |
-| 5 | Solo Sushi | synthetic | 172 | district, price_level, group_friendly, cuisine, dietary_options, source, updated_at |
+| # | Ten tai lieu | File trong repo | Loai | So ky tu | So headings | Metadata chinh |
+|---|--------------|-----------------|------|----------|-------------|----------------|
+| 1 | Nghi dinh 13/2023/ND-CP ve bao ve du lieu ca nhan | `data/group_legal_docs/13_2023_ND_CP_bao_ve_du_lieu_ca_nhan.md` | decree | 68,035 | 67 | source, doc_type, year, topic, law_no |
+| 2 | Luat An ninh mang 24/2018/QH14 | `data/group_legal_docs/24_2018_QH14_luat_an_ninh_mang.md` | law | 63,831 | 51 | source, doc_type, year, topic, law_no |
+| 3 | Luat Giao dich dien tu 20/2023/QH15 | `data/group_legal_docs/20_2023_QH15_luat_giao_dich_dien_tu.md` | law | 57,257 | 67 | source, doc_type, year, topic, law_no |
+| 4 | Nghi dinh 356/2025/ND-CP huong dan Luat BVDLCN | `data/group_legal_docs/356_2025_ND_CP_huong_dan_luat_bvdlcn.md` | decree | 109,398 | 74 | source, doc_type, year, topic, law_no |
+| 5 | Luat Bao ve du lieu ca nhan 91/2025/QH15 | `data/group_legal_docs/91_2025_QH15_luat_bao_ve_du_lieu_ca_nhan.md` | law | 53,636 | 47 | source, doc_type, year, topic, law_no |
 
 ### Metadata Schema
 
-| Truong metadata | Kieu | Vi du gia tri | Tai sao huu ich cho retrieval? |
-|----------------|------|---------------|-------------------------------|
-| district | string | District 1 | Loc theo khu vuc gan nguoi dung |
-| price_level | string | low, medium, high | Loc theo ngan sach |
-| group_friendly | bool | True | Loai quan khong phu hop di nhom |
-| cuisine | string | Korean, Vegetarian | Loc theo loai mon |
-| dietary_options | string | vegan allergy-friendly | Tim quan cho nguoi an chay/di ung |
-| updated_at | string | 2026-06-05 | Biet du lieu co con moi khong |
+| Truong metadata | Kieu | Vi du | Vai tro trong retrieval |
+|----------------|------|-------|--------------------------|
+| source | string | `91_2025_QH15_luat_bao_ve_du_lieu_ca_nhan.md` | Trich nguon trong answer |
+| doc_type | string | `law`, `decree` | Loc theo luat/nghi dinh |
+| year | string | `2025` | Uu tien van ban moi |
+| topic | string | `personal_data_protection` | Loc nhanh theo mien noi dung |
+| law_no | string | `91/2025/QH15` | Loc dung van ban khi query neu so hieu |
+| chunk_index | int | `12` | Debug va trace chunk |
 
 ---
 
-## 3. Chunking Strategy
+## 3. Chunking Strategy - Nhom
 
 ### Baseline Analysis
 
-Chay `ChunkingStrategyComparator().compare()` voi `chunk_size=120` tren 3 tai lieu mau:
+Chay tren 5,000 ky tu dau cua 3 van ban mau, `chunk_size=1200`:
 
-| Tai lieu | Strategy | Chunk Count | Avg Length | Preserves Context? |
-|-----------|----------|-------------|------------|-------------------|
-| Pho Harmony | FixedSizeChunker | 2 | 110.5 | Trung binh, co the cat ngang y |
-| Pho Harmony | SentenceChunker | 1 | 209.0 | Tot, giu tron cau |
-| Pho Harmony | RecursiveChunker | 2 | 104.0 | Tot, uu tien cau/word khi can |
-| Seoul Corner | FixedSizeChunker | 2 | 109.0 | Trung binh |
-| Seoul Corner | SentenceChunker | 1 | 206.0 | Tot |
-| Seoul Corner | RecursiveChunker | 2 | 102.5 | Tot |
-| Green Table | FixedSizeChunker | 2 | 115.5 | Trung binh |
-| Green Table | SentenceChunker | 1 | 219.0 | Tot nhung chunk hoi dai |
-| Green Table | RecursiveChunker | 3 | 72.3 | Tot, chunk gon hon |
+| Tai lieu | Strategy | Chunk Count | Avg Length | Nhan xet |
+|----------|----------|-------------|------------|----------|
+| ND 13/2023 | Fixed-size | 5 | 1096.0 | De kiem soat size nhung co the cat ngang dieu/khoan |
+| ND 13/2023 | Sentence | 6 | 818.5 | Giu cau tot, nhung markdown legal co nhieu bullet dai |
+| ND 13/2023 | Recursive | 6 | 821.7 | Can bang tot, uu tien heading/newline |
+| Luat An ninh mang | Fixed-size | 5 | 1096.0 | Co nguy co cat giua danh sach bien phap |
+| Luat An ninh mang | Sentence | 8 | 621.6 | Chunk ngan hon nhung de tach khoan lien quan |
+| Luat An ninh mang | Recursive | 6 | 830.2 | Giu cau truc dieu/khoan kha tot |
+| Luat Giao dich dien tu | Fixed-size | 5 | 1096.0 | Kich thuoc deu |
+| Luat Giao dich dien tu | Sentence | 12 | 414.9 | Qua nhieu chunk nho |
+| Luat Giao dich dien tu | Recursive | 5 | 998.8 | Tot nhat cho markdown co heading |
 
 ### Strategy Cua Toi
 
-**Loai:** RecursiveChunker + metadata filter + `top_k=3`.
+**Loai:** `RecursiveChunker(chunk_size=1800)` + metadata filter + model `AITeamVN/Vietnamese_Embedding`.
 
-RecursiveChunker cat theo thu tu tu nhien: paragraph, newline, sentence separator, word, roi character fallback. Cach nay giu duoc y nghia cua doan van khi tai lieu co cau truc, nhung van dam bao chunk khong qua dai neu gap mot doan lien tuc.
+Van ban phap luat co cau truc ro: chuong, muc, dieu, khoan, bullet. Recursive chunking uu tien paragraph/newline truoc khi fallback sang word/character, nen giu duoc ngu canh hon fixed-size. Metadata filter theo `topic`, `law_no`, `doc_type` giup thu hep tap ung vien truoc semantic search, rat quan trong vi cac van ban co nhieu cum tu lap lai nhu "du lieu ca nhan", "co quan, to chuc, ca nhan".
 
-Toi chon strategy nay vi tai lieu nha hang thuong co nhieu thong tin gan nhau: ten quan, khu vuc, gia, loai mon, do phu hop voi nhom, gio mo cua. Recursive chunking giu cac thong tin nay trong cung mot vung ngu canh tot hon fixed-size. Metadata filter giup giam nhieu truoc khi search, vi cac dieu kien nhu gia, khu vuc, cuisine thuong rat ro.
+Model nhom chon:
 
-### So Sanh Voi Baseline
+```bash
+pip install sentence-transformers
+python3 -c "from src import LocalEmbedder; e = LocalEmbedder('AITeamVN/Vietnamese_Embedding'); print(e._backend_name, len(e('xin chào')))"
+```
 
-| Tai lieu | Strategy | Chunk Count | Avg Length | Retrieval Quality? |
-|-----------|----------|-------------|------------|--------------------|
-| Restaurant docs | Fixed-size baseline | 2 moi doc | 109-116 | On nhung co nguy co cat ngang thong tin |
-| Restaurant docs | Sentence baseline | 1 moi doc | 206-219 | Giu nghia tot nhung it hat retrieval hon |
-| Restaurant docs | **Recursive + metadata filter** | 2-3 moi doc | 72-104 | Can bang giua ngu canh va do gon |
+Ket qua tren may:
+
+```text
+AITeamVN/Vietnamese_Embedding 1024
+```
 
 ### So Sanh Voi Thanh Vien Khac
 
 | Thanh vien | Strategy | Retrieval Score (/10) | Diem manh | Diem yeu |
-|-----------|----------|----------------------|-----------|----------|
-| Toi | Recursive + metadata filter | 8 | Giu cau truc, loc metadata tot | Mock embedding lam score khong on dinh |
-| Ban A | Fixed-size | 6 | De kiem soat size | Co the cat ngang y |
-| Ban B | Sentence chunking | 7 | Giu tron cau | Chunk dai neu tai lieu nhieu cau lien quan |
+|------------|----------|----------------------|-----------|----------|
+| Toi | Recursive + metadata filter + Vietnamese embedding | 8 | Hop van ban markdown phap ly, co trace source | Can them article-aware metadata de top-1 chuan hon |
+| Ban A | Fixed-size + Vietnamese embedding | 6 | Don gian, chunk deu | Co the cat ngang Dieu/Khoan |
+| Ban B | Sentence chunking + Vietnamese embedding | 7 | Giu cau day du | Tao nhieu chunk nho, mat ngu canh cua dieu |
 
-Strategy tot nhat cho domain nay la recursive chunking ket hop metadata filtering. Ly do la domain co nhieu rang buoc co cau truc, nen loc metadata truoc giup giam nhieu, sau do semantic search chi can xep hang trong tap ung vien da hop ly.
+Ket luan nhom: recursive chunking la baseline tot nhat, nhung de dat diem cao hon voi van ban phap luat nen bo sung parser tach theo `#### Điều X` va gan metadata `article_number`, `chapter`.
 
 ---
 
@@ -130,19 +128,19 @@ Strategy tot nhat cho domain nay la recursive chunking ket hop metadata filterin
 
 ### Chunking Functions
 
-**`SentenceChunker.chunk`:** Toi normalize whitespace, dung regex de tach cau theo `.`, `!`, `?`, sau do gom toi da `max_sentences_per_chunk` cau vao mot chunk. Cach nay giu lai dau cau va loai bo chunk rong.
-
-**`RecursiveChunker.chunk` / `_split`:** Thuat toan co base case la text rong hoac text ngan hon `chunk_size`. Neu doan qua dai, no thu tung separator theo thu tu uu tien; neu khong con separator thi fallback cat theo ky tu de khong crash.
+`SentenceChunker.chunk` normalize whitespace, tach cau theo dau `.`, `!`, `?`, sau do gom toi da `max_sentences_per_chunk` cau vao mot chunk. `RecursiveChunker.chunk` dung base case text rong/text ngan hon `chunk_size`, neu qua dai thi thu lan luot separator tu paragraph den word/character fallback.
 
 ### EmbeddingStore
 
-**`add_documents` + `search`:** Store dung in-memory list de on dinh cho test. Moi document duoc normalize thanh record gom `id`, `doc_id`, `content`, `metadata`, `embedding`; search tao embedding cho query, tinh cosine similarity, sort giam dan theo `score`, va tra ve toi da `top_k`.
-
-**`search_with_filter` + `delete_document`:** Metadata filter duoc ap dung truoc semantic search bang exact match. Delete xoa tat ca record co `doc_id` trung voi input va tra ve `True` neu collection size giam.
+`EmbeddingStore` dung in-memory list de on dinh cho test. Moi record luu `id`, `doc_id`, `content`, `metadata`, `embedding`; search tinh cosine similarity, sort giam dan theo `score`, va tra ve top-k. `search_with_filter` loc metadata truoc khi search semantic; `delete_document` xoa theo `doc_id`.
 
 ### KnowledgeBaseAgent
 
-**`answer`:** Agent goi `store.search(question, top_k)`, build prompt co phan `Retrieved context` va `Question`, yeu cau chi tra loi dua tren context. Neu khong co context, agent tra ve cau an toan thay vi tu suy dien.
+Agent goi `store.search`, build prompt co `Retrieved context` va `Question`, yeu cau chi tra loi dua tren context. Neu khong co context, agent tra ve cau an toan thay vi suy dien.
+
+### Local Embedder
+
+`LocalEmbedder` dung `sentence-transformers`. Tren may Windows bi loi SSL certificate khi tai Hugging Face, nen code co retry voi HTTP backend `verify=False` trong moi truong lab. Sau khi model da cache, cac lan chay sau nhanh hon.
 
 ### Test Results
 
@@ -151,92 +149,92 @@ pytest tests/ -v
 42 passed in 0.13s
 ```
 
-**So tests pass:** 42 / 42
-
 ---
 
 ## 5. Similarity Predictions
 
-Ket qua dung mock embedding cua repo, nen score chi mang tinh deterministic smoke test, khong phai semantic model that.
+Model dung de benchmark: `AITeamVN/Vietnamese_Embedding`, 1024 dimensions.
 
-| Pair | Sentence A | Sentence B | Du doan | Actual Score | Dung? |
-|------|-----------|-----------|---------|--------------|-------|
-| 1 | Need a cheap Korean place for a group dinner. | Seoul Corner is a low-price Korean restaurant for groups. | high | 0.158 | Tuong doi |
-| 2 | Vegetarian options are required. | The restaurant has vegan bowls and allergy notes. | high | 0.037 | Mot phan |
-| 3 | We need a quiet place to talk. | Comfortable seating is good for sitting a long time. | high | 0.119 | Tuong doi |
-| 4 | Find sushi for two people. | A large team needs Vietnamese noodles under 100k. | low | 0.096 | Khong ro |
-| 5 | Open until late evening. | The price is high and seating is limited. | low | -0.138 | Dung |
+| Pair | Sentence A | Sentence B | Du doan | Ghi chu |
+|------|------------|------------|---------|---------|
+| 1 | "du lieu ca nhan nhay cam la gi" | "du lieu gan lien voi quyen rieng tu cua ca nhan" | high | Cung noi ve dinh nghia BVDLCN |
+| 2 | "chu the du lieu co quyen xoa du lieu" | "yeu cau cung cap, xoa, han che xu ly du lieu ca nhan" | high | Cung noi ve quyen cua chu the du lieu |
+| 3 | "hanh vi bi nghiem cam trong giao dich dien tu" | "gia mao, lam sai lech thong diep du lieu" | high | Cung thuoc Dieu 6 Luat GDDT |
+| 4 | "bien phap bao ve an ninh mang" | "chu ky dien tu nuoc ngoai" | low | Khac topic |
+| 5 | "thoi han phan hoi yeu cau xoa du lieu" | "giao ket hop dong dien tu" | low | Khac van ban va y dinh |
 
-Ket qua bat ngo nhat la pair 4 co score duong du khac chu de. Dieu nay cho thay mock embedding chi phu hop cho test deterministic, khong thay the duoc embedding semantic that khi can chat luong retrieval cao.
+Ket qua tong quan: model tieng Viet tot hon mock embedding trong viec nhan dien cum tu phap ly, nhung top-1 van co the sai khi chunk qua dai hoac nhieu dieu khoan co tu lap lai.
 
 ---
 
-## 6. Results - Ca Nhan
+## 6. Results - Benchmark Queries
 
-### Benchmark Queries & Gold Answers
+Benchmark dung 281 chunks tao boi `RecursiveChunker(chunk_size=1800)`, batch encoded bang `AITeamVN/Vietnamese_Embedding`.
 
 | # | Query | Gold Answer |
 |---|-------|-------------|
-| 1 | Tim quan phu hop cho nhom 5 nguoi, gia duoi 100k/nguoi. | Pho Harmony hoac Seoul Corner; ca hai low price va group_friendly. |
-| 2 | Co quan nao gan truong, phu hop an toi nhom khong? | Seoul Corner gan university area, phu hop nhom 5-6 nguoi, mo den 22:00. |
-| 3 | Nhom co nguoi an chay thi nen chon quan nao? | Green Table la lua chon tot nhat; Pho Harmony/Bistro Late co vegetarian options. |
-| 4 | Quan nao phu hop de ngoi lau va noi chuyen? | Bistro Late hoac Green Table vi co seating thoai mai/quiet seating. |
-| 5 | Neu nhom thich mon Han va ngan sach thap thi nen chon quan nao? | Seoul Corner. |
+| 1 | Du lieu ca nhan nhay cam bao gom nhung gi? | 12 loai trong ND 356/2025, Dieu 4. |
+| 2 | Trach nhiem cua doanh nghiep nuoc ngoai xu ly du lieu nguoi Viet? | Phai tuan thu Luat BVDLCN Viet Nam neu truc tiep tham gia hoac lien quan den xu ly DLCN cua cong dan Viet Nam/nguoi goc Viet; Luat 91/2025, Dieu 1 Khoan 2c. |
+| 3 | Chu ky dien tu co gia tri phap ly khong? | Co; chu ky dien tu chuyen dung bao dam an toan hoac chu ky so co gia tri phap ly tuong duong chu ky tay; Luat 20/2023, Dieu 23 Khoan 2. |
+| 4 | Muc phat vi pham bao ve du lieu ca nhan? | Phat tien toi da 03 ty dong; Luat 91/2025, Dieu 8 Khoan 5. |
+| 5 | Quyen cua chu the du lieu ca nhan gom nhung gi? | 6 nhom quyen trong Luat 91/2025, Dieu 4 Khoan 1. |
 
-### Ket Qua Cua Toi
+### Ket Qua Ca Nhan
 
-| # | Query | Top-1 Retrieved Chunk | Score | Relevant? | Agent Answer |
-|---|-------|----------------------|-------|-----------|--------------|
-| 1 | Group of 5 under 100k | Pho Harmony: Vietnamese, 85k/person, group tables | 0.048 | Yes | Chon Pho Harmony; Seoul Corner cung la ung vien |
-| 2 | Near university for dinner group | Seoul Corner: university area, Korean, open until 22:00 | -0.133 | Yes | Chon Seoul Corner |
-| 3 | Someone vegetarian | Pho Harmony top-1, Green Table top-2 | 0.258 | Yes | Green Table tot nhat neu uu tien vegetarian |
-| 4 | Sit long and talk | Seoul Corner top-1, Bistro Late top-3 | 0.140 | Partly | Nen dung metadata/score threshold vi mock embedding xep hang chua tot |
-| 5 | Low budget Korean group | Seoul Corner | -0.065 | Yes | Chon Seoul Corner |
+| # | Metadata filter | Top-1 retrieved | Score | Relevant top-3? | Nhan xet |
+|---|-----------------|-----------------|-------|-----------------|----------|
+| 1 | `law_no=356/2025/ND-CP` | ND 356/2025, chunk 2, Dieu 4 | 0.654 | Yes | Top-1 dung gold answer ve danh muc du lieu ca nhan nhay cam. |
+| 2 | `law_no=91/2025/QH15` | Luat 91/2025, chunk 41, Dieu 37 | 0.519 | Partial/No | Dung van ban va noi ve trach nhiem xu ly DLCN, nhung khong dung Dieu 1 Khoan 2c ve doi tuong nuoc ngoai. |
+| 3 | `law_no=20/2023/QH15` | Luat 20/2023, chunk 20, Dieu 23 | 0.623 | Yes | Top-1 dung dieu ve gia tri phap ly cua chu ky dien tu. |
+| 4 | `law_no=91/2025/QH15` | Luat 91/2025, chunk 8, Dieu 8 | 0.697 | Yes | Top-1 dung dieu ve xu ly vi pham va muc phat 03 ty dong. |
+| 5 | `law_no=91/2025/QH15` | Luat 91/2025, chunk 4, Dieu 4 | 0.740 | Yes | Top-1 dung dieu ve quyen cua chu the du lieu ca nhan. |
 
-**Bao nhieu queries tra ve chunk relevant trong top-3?** 5 / 5  
-**Top-1 relevant:** 4 / 5
+**Precision theo van ban trong top-3:** 5 / 5  
+**Gold answer relevant trong top-3:** 4 / 5, Q2 partial vi retrieve dung van ban/trach nhiem nhung lech dieu khoan gold.  
+**Top-1 dung dieu khoan chinh xac:** 4 / 5  
+**Ket luan:** strategy hoat dong tot khi co `law_no` metadata filter. Loi con lai cho thay legal RAG nen gan them `article_number` de query nhu Q2 co the truy dung Dieu 1 Khoan 2c.
 
 ---
 
 ## 7. Evaluation
 
-**Retrieval Precision:** Top-3 co chunk relevant cho 5/5 benchmark queries khi dung metadata filter. Top-1 thinh thoang chua tot vi mock embedding khong nam semantic similarity thuc su.
+**Retrieval Precision:** Với metadata filter, top-3 gan nhu luon dung van ban. Tuy nhien, top-1 chua on dinh khi mot van ban co nhieu dieu lap lai cum tu "du lieu ca nhan".
 
-**Chunk Coherence:** Recursive chunking giu y tot hon fixed-size vi uu tien paragraph/sentence/word. Cac chunk khong bi rong va phan lon nam duoi muc `chunk_size`.
+**Chunk Coherence:** Recursive chunking giu doan markdown tot hon fixed-size. Tuy vay, neu chunk chua ca nhieu khoan/phu luc, model co the xep hang sai dieu.
 
-**Metadata Utility:** Metadata nhu `district`, `price_level`, `group_friendly`, `cuisine`, `dietary_options` cai thien ket qua ro ret. Vi du query Korean low budget duoc loc truoc bang `cuisine=Korean` va `price_level=low`.
+**Metadata Utility:** `topic`, `law_no`, `doc_type` cai thien retrieval ro ret. Truong con thieu quan trong la `article_number`, `chapter`, `effective_date`.
 
-**Grounding Quality:** Agent build prompt tu retrieved context va yeu cau chi tra loi dua tren context. Neu khong retrieve duoc chunk nao, agent tra ve thong bao khong du thong tin trong knowledge base.
+**Grounding Quality:** Agent prompt co context va source/score, giup cau tra loi duoc grounding. Voi phap ly, nen bat agent trich source theo `law_no + article_number`.
 
-**Data Strategy Impact:** Chat luong du lieu quan trong hon viec chon model trong lab nay. Neu thieu metadata ve gia, khu vuc, gio mo cua, hoac dietary options, agent se kho tra loi dung cac cau hoi co rang buoc.
+**Data Strategy Impact:** Chat luong schema va chunking quan trong hon viec chi doi model. Model Vietnamese embedding giup semantic tot hon mock, nhung khong thay the duoc document parsing tot.
 
 ---
 
-## 8. Failure Cases
+## 8. Failure Cases Va Cai Thien
 
-1. **Query qua mo ho:** "Quan nao ngon?" khong co tieu chi ve gia, khu vuc, mon an, hay nhom may nguoi. Cai thien bang cach hoi lai user hoac them prompt clarification.
+1. **Query khong noi ro van ban:** "quyen cua toi la gi?" qua mo ho. Cai thien: hoi lai nguoi dung hoac them classifier topic.
 
-2. **Thieu metadata gia/khu vuc:** Neu document chi co review text, search co the tra ve quan hay nhung khong dung ngan sach. Cai thien bang schema bat buoc `price_level`, `district`, `group_friendly`.
+2. **Chunk qua dai/chua nhieu dieu:** Top-1 co the la phu luc hoac dieu lien quan nhung khong phai gold article. Cai thien: tach theo `#### Điều X`.
 
-3. **Chunk qua ngan:** Neu cat moi field thanh mot chunk rieng, thong tin "gia thap" co the tach khoi "phu hop nhom". Cai thien bang recursive chunking va chunk size du de giu thong tin lien quan.
+3. **Thieu metadata dieu/khoan:** Chi filter theo `topic` van con nhieu ung vien. Cai thien: gan `article_number`, `chapter`, `section`.
 
-4. **Mock embedding khong semantic:** Mock embedding co the cho score am voi chunk dung hoac score duong voi chunk nhieu. Cai thien bang local `all-MiniLM-L6-v2` hoac OpenAI embedding khi lam demo that.
+4. **Cau hoi can cap nhat phap ly:** Neu co van ban moi hon, retrieval phai uu tien `year`/`effective_date`. Cai thien: metadata ve hieu luc va quan he thay the/sua doi.
 
-5. **Khong co score threshold:** Store hien tra ve top-k ngay ca khi score thap. Cai thien bang them threshold va cau tra loi "khong du thong tin" khi diem qua thap.
+5. **SSL/Hugging Face tai model:** May Windows co the loi certificate. Cai thien: cache model truoc buoi demo va giu fallback retry trong `LocalEmbedder`.
 
 ---
 
 ## 9. What I Learned
 
-Dieu hay nhat hoc duoc tu so sanh strategy la metadata filtering thuong quan trong ngang, thậm chi hon chunking, trong cac domain co rang buoc ro nhu chon nha hang. Chunking tot giup giu ngu canh, nhung metadata moi giup loai bo ung vien sai ngay tu dau.
+Trong domain phap luat, retrieval khong chi la embedding. Document parsing va metadata gan voi cau truc phap ly moi la phan quyet dinh: dung van ban, dung dieu, dung khoan. Vietnamese embedding giup hon mock embedding, nhung neu chunking khong ton trong `Điều/Khoản` thi van co the lay sai context.
 
-Neu lam lai, toi se tang chat luong dataset: moi quan nen co gia cap nhat, gio mo cua, do on, suc chua nhom, tag an chay/di ung, va review ngan gon. Toi cung se dung embedding model that de danh gia retrieval semantic cong bang hon.
+Neu lam tiep, toi se viet them `LegalArticleChunker` de tach moi `#### Điều X` thanh mot chunk, keo theo metadata `article_number`, `article_title`, `chapter`, `law_no`. Khi do benchmark se cong bang hon va agent co the trich dan nguon chinh xac.
 
 ---
 
 ## 10. Ket Luan
 
-Data quality quan trong hon model selection trong lab nay. Strategy tot nhat cho domain AI Restaurant Chooser for Groups la recursive chunking ket hop metadata filtering va `top_k=3`. RAG giup agent giam hallucination vi cau tra loi duoc grounding bang retrieved context, dong thoi co duong lui an toan khi knowledge base khong du thong tin.
+Bo du lieu nhom la 5 van ban phap luat ve bao ve du lieu ca nhan, an ninh mang, va giao dich dien tu. Strategy tot nhat hien tai la recursive chunking + metadata filter + `AITeamVN/Vietnamese_Embedding`. De nang chat luong len muc san sang demo, buoc tiep theo nen la article-aware chunking va metadata theo Dieu/Khoan.
 
 ---
 
@@ -245,11 +243,11 @@ Data quality quan trong hon model selection trong lab nay. Strategy tot nhat cho
 | Tieu chi | Loai | Diem tu danh gia |
 |----------|------|-------------------|
 | Warm-up | Ca nhan | 5 / 5 |
-| Document selection | Nhom | 9 / 10 |
-| Chunking strategy | Nhom | 14 / 15 |
+| Document selection | Nhom | 10 / 10 |
+| Chunking strategy | Nhom | 13 / 15 |
 | My approach | Ca nhan | 10 / 10 |
 | Similarity predictions | Ca nhan | 4 / 5 |
-| Results | Ca nhan | 9 / 10 |
+| Results | Ca nhan | 8 / 10 |
 | Core implementation (tests) | Ca nhan | 30 / 30 |
 | Demo | Nhom | 4 / 5 |
-| **Tong** | | **85 / 100** |
+| **Tong** | | **84 / 100** |
