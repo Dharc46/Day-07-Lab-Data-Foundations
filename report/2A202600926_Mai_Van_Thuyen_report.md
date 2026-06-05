@@ -1,7 +1,7 @@
 # Báo Cáo Lab 7: Embedding & Vector Store
 
-**Họ tên:** Nguyễn Văn A
-**Nhóm:** Nhóm Pháp Luật Số
+**Họ tên:** Mai Văn Thuyên
+**Nhóm:** E5
 **Ngày:** 05/06/2026
 
 ---
