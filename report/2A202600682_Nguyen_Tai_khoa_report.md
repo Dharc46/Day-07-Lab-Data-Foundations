@@ -128,12 +128,12 @@ class ParentChildChunker:
 | Thành viên | Strategy | Avg Score | Top-3 Relevant | Điểm mạnh | Điểm yếu |
 |-----------|----------|-----------|----------------|-----------|----------|
 | Tôi (Nguyễn Tài Khoa) | ParentChildChunker (child=3 câu, parent=Điều) | 0.6581 | 5/5 | Child chunk chính xác, parent giữ trọn Điều để trả context đầy đủ | Q2 score thấp (0.5313), child có thể quá nhỏ cho query mơ hồ |
-| Nguyễn Thanh Đạt | Article-level + lexical/article boost | score >1.0 (combined) | 5/5 | Top-1 đúng 5/5, có boost domain-specific giúp Q2 hit đúng Điều 1 | Cần custom boost phức tạp, khó tái sử dụng cho domain khác |
-| Nguyễn Khôi Lâm | Recursive(1800) + metadata filter | 0.6466 | 4/5 (Q2 partial) | Metadata filter theo `law_no` thu hẹp search space hiệu quả, chunk lớn giữ context | Chunk 1800 chars quá lớn, Q2 retrieve đúng văn bản nhưng lệch điều khoản gold |
+| Nguyễn Thanh Đạt | RecursiveChunker(1800) + metadata filter (topic, law_no, doc_type) | — | 5/5 | Metadata filter thu hẹp search space hiệu quả, chunk lớn giữ context | Chunk 1800 chars quá lớn, có thể chứa nhiều Điều trong 1 chunk |
+| Nguyễn Khôi Lâm | Article-level chunking (tách theo `#### Điều`) + lexical/article boost | — | 5/5 | Top-1 đúng 5/5, tách đúng đơn vị Điều luật tự nhiên, có domain boost | Cần custom boost phức tạp, khó tái sử dụng cho domain khác |
 | Mai Văn Thuyên | RecursiveChunker(500) | 0.6502 | 5/5 | Đơn giản, giữ cấu trúc đoạn tốt | Chunk không theo đơn vị Điều, thiếu context khi điều khoản dài |
 
 **Strategy nào tốt nhất cho domain này? Tại sao?**
-> Article-level chunking (Nguyễn Thanh Đạt) cho kết quả tốt nhất vì tách đúng theo đơn vị tham chiếu pháp lý tự nhiên (Điều). ParentChildChunker của tôi là bước tiến từ baseline vì vừa embed chính xác (child nhỏ) vừa giữ context (parent = Điều), nhưng article-level + lexical boost cho top-1 accuracy cao hơn nhờ kết hợp semantic và lexical matching.
+> Article-level chunking (Nguyễn Khôi Lâm) cho kết quả tốt nhất vì tách đúng theo đơn vị tham chiếu pháp lý tự nhiên (Điều). ParentChildChunker của tôi là bước tiến tương tự vì parent cũng là Điều, nhưng thêm tầng child nhỏ giúp embedding chính xác hơn. RecursiveChunker(1800) của Thanh Đạt kết hợp metadata filter cũng hiệu quả nhưng chunk quá lớn dễ lẫn nhiều Điều.
 
 ---
 
@@ -264,8 +264,7 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 > Nguyễn Thanh Đạt kết hợp lexical boost với semantic search — không chỉ dựa vào embedding mà còn tăng điểm cho chunk có heading chứa keyword query. Điều này giải quyết được weakness của pure semantic search khi query paraphrase khác từ vựng với văn bản gốc (ví dụ "doanh nghiệp nước ngoài" vs "cơ quan, tổ chức, cá nhân nước ngoài"). Mai Văn Thuyên cho thấy RecursiveChunker đơn giản vẫn đạt kết quả tốt (5/5 relevant) nếu chunk_size phù hợp.
 
 **Điều hay nhất tôi học được từ nhóm khác (qua demo):**
-> *Chờ demo để điền.*
-
+> Nhóm chọn slide buổi học là chủ đề, dùng enriching để lấy add thêm metadata xem có đồ thị code.. chunking theo slide thì sẽ có vấn đề khi có 2 slide topic giống nhau, thì thêm filter. Có nhóm làm về luật zalo thì có gợi ý là dùng recursive có thể phù hợp với luật vì ta cần độ chính xác cao. 
 **Nếu làm lại, tôi sẽ thay đổi gì trong data strategy?**
 > Tôi sẽ bổ sung metadata `article_number` và `chapter` ngay từ bước loading, thay vì chỉ có `doc_type`/`year`/`topic`. Metadata chi tiết hơn giúp filter trước khi search semantic, giảm false positive. Ngoài ra sẽ thêm lexical/BM25 score kết hợp với cosine similarity để xử lý tốt hơn các query có từ khóa pháp lý cụ thể.
 
