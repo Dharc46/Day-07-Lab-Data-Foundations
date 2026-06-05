@@ -97,6 +97,40 @@ class RecursiveChunker:
         return results
 
 
+class ParentChildChunker:
+    """
+    Two-level chunking: split text into parent chunks, then split each parent
+    into smaller child chunks. Children are used for embedding (more precise
+    matching), but each child carries a reference to its parent so the full
+    context can be returned at retrieval time.
+
+    Returns a list of dicts: {"child": str, "parent": str}
+    """
+
+    def __init__(
+        self,
+        parent_separator: str = r"(?=####\s+Điều\s+\d+)",
+        child_max_sentences: int = 3,
+    ) -> None:
+        self.parent_separator = parent_separator
+        self.child_chunker = SentenceChunker(max_sentences_per_chunk=child_max_sentences)
+
+    def chunk(self, text: str) -> list[dict[str, str]]:
+        if not text:
+            return []
+        parents = re.split(self.parent_separator, text)
+        parents = [p.strip() for p in parents if p.strip()]
+        results: list[dict[str, str]] = []
+        for parent in parents:
+            children = self.child_chunker.chunk(parent)
+            if not children:
+                results.append({"child": parent, "parent": parent})
+                continue
+            for child in children:
+                results.append({"child": child, "parent": parent})
+        return results
+
+
 def _dot(a: list[float], b: list[float]) -> float:
     return sum(x * y for x, y in zip(a, b))
 

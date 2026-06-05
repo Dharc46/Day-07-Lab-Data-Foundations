@@ -1,0 +1,390 @@
+Benchmark run: 2026-06-05 15:14:53
+======================================================================
+
+Loading Vietnamese embedding model...
+Model: AITeamVN/Vietnamese_Embedding
+
+--- Building SentenceChunker(5) store ---
+  13_2023_ND-CP.md: 129 chunks (avg 525 chars)
+  2018_775 + 776_24-2018-QH14.md: 78 chunks (avg 816 chars)
+  2023_867 + 868_20-2023-QH15.md: 93 chunks (avg 614 chars)
+  356_2025_ND-CP.md: 149 chunks (avg 731 chars)
+  91_2025_QH15.md: 79 chunks (avg 677 chars)
+  Total: 528 chunks
+
+--- Building ParentChildChunker store ---
+  13_2023_ND-CP.md: 45 parents (avg 1509 chars), 230 children (avg 294 chars)
+  2018_775 + 776_24-2018-QH14.md: 44 parents (avg 1448 chars), 148 children (avg 429 chars)
+  2023_867 + 868_20-2023-QH15.md: 54 parents (avg 1058 chars), 178 children (avg 320 chars)
+  356_2025_ND-CP.md: 43 parents (avg 2542 chars), 263 children (avg 413 chars)
+  91_2025_QH15.md: 40 parents (avg 1338 chars), 147 children (avg 363 chars)
+  Total: 966 child chunks
+
+======================================================================
+=== SentenceChunker(max_sentences=5) ===
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+Query 1: Dữ liệu cá nhân nhạy cảm bao gồm những gì?
+Gold Answer: 12 loại: nguồn gốc chủng tộc/dân tộc, quan điểm chính trị/tôn giáo, đời sống riêng tư, sức khỏe, sinh trắc học, di truyền, đời sống tình dục, dữ liệu tội phạm, vị trí, tên đăng nhập/mật khẩu, tài chính/tín dụng, hành vi trên mạng (NĐ 356/2025, Điều 4)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.6693] (source: 356_2025_ND-CP.md) << TOP-1
+     metadata: doc_type=nghị_định, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       #### Điều 4. Danh mục dữ liệu cá nhân nhạy cảm 1. Dữ liệu cá nhân nhạy cảm bao gồm:    * a) Dữ liệu 
+       tiết lộ nguồn gốc chủng tộc, nguồn gốc dân tộc;    * b) Quan điểm về chính trị, tôn giáo, tín ngưỡng
+       ;    * c) Thông tin về đời sống riêng tư, bí mật cá nhân, bí mật gia đình;    * d) Tình trạng sức kh
+       ỏe;    * đ) Dữ liệu sinh trắc học, đặc điểm di truyền;    * e) Dữ liệu tiết lộ đời sống tình dục, xu
+        hướng tình dục của cá nhân;    * g) Dữ liệu về tội phạm, vi phạm pháp luật được thu thập, lưu trữ b
+
+  #2 [score=0.6283] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       **Thông tin giúp xác định một con người cụ thể** là thông tin hình thành từ hoạt động của cá nhân mà
+        khi kết hợp với các dữ liệu, thông tin lưu trữ khác có thể xác định một con người cụ thể. 3. **Dữ l
+       iệu cá nhân cơ bản** bao gồm:    * a) Họ, chữ đệm và tên khai sinh, tên gọi khác (nếu có);    * b) N
+       gày, tháng, năm sinh; ngày, tháng, năm chết hoặc mất tích;    * c) Giới tính;    * d) Nơi sinh, nơi 
+       đăng ký khai sinh, nơi thường trú, nơi tạm trú, nơi ở hiện tại, quê quán, địa chỉ liên hệ;    * đ) Q
+
+  #3 [score=0.6151] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       #### Điều 2. Giải thích từ ngữ Trong Nghị định này, các từ ngữ dưới đây được hiểu như sau: 1. **Dữ l
+       iệu cá nhân** là thông tin dưới dạng ký hiệu, chữ viết, chữ số, hình ảnh, âm thanh hoặc dạng tương t
+       ự trên môi trường điện tử gắn liền với một con người cụ thể hoặc giúp xác định một con người cụ thể.
+        Dữ liệu cá nhân bao gồm dữ liệu cá nhân cơ bản và dữ liệu cá nhân nhạy cảm. 2.
+
+  Summary: top-3 scores = [0.6693, 0.6283, 0.6151]
+
+──────────────────────────────────────────────────────────────────────
+Query 2: Trách nhiệm của doanh nghiệp nước ngoài xử lý dữ liệu người Việt?
+Gold Answer: Phải tuân thủ Luật BVDLCN Việt Nam nếu trực tiếp tham gia hoặc liên quan đến xử lý DLCN của công dân VN và người gốc Việt (Luật 91/2025, Điều 1 Khoản 2c)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.5371] (source: 91_2025_QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Trách nhiệm của bên xử lý dữ liệu cá nhân như sau:    * a) Chỉ được tiếp nhận dữ liệu cá nhân sau kh
+       i có thỏa thuận, hợp đồng về xử lý dữ liệu cá nhân với bên kiểm soát dữ liệu cá nhân, bên kiểm soát 
+       và xử lý dữ liệu cá nhân;    * b) Xử lý dữ liệu cá nhân theo đúng thỏa thuận, hợp đồng ký kết với bê
+       n kiểm soát dữ liệu cá nhân, bên kiểm soát và xử lý dữ liệu cá nhân;    * c) Thực hiện đầy đủ các bi
+       ện pháp bảo vệ dữ liệu cá nhân theo quy định của Luật này và các quy định khác của pháp luật có liên
+
+  #2 [score=0.5214] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Xử lý dữ liệu cá nhân theo đúng hợp đồng hoặc thỏa thuận ký kết với Bên Kiểm soát dữ liệu cá nhân. 3
+       . Thực hiện đầy đủ các biện pháp bảo vệ dữ liệu cá nhân quy định tại Nghị định này và các văn bản ph
+       áp luật khác có liên quan. 4. Bên Xử lý dữ liệu cá nhân chịu trách nhiệm trước chủ thể dữ liệu về cá
+       c thiệt hại do quá trình xử lý dữ liệu cá nhân gây ra.
+
+  #3 [score=0.5207] (source: 356_2025_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Có hạ tầng, hệ thống trang thiết bị, cơ sở vật chất và công nghệ phù hợp với dịch vụ xử lý dữ liệu c
+       á nhân. 4. Có kết quả đạt yêu cầu đối với hồ sơ đánh giá tác động xử lý dữ liệu cá nhân và hồ sơ đán
+       h giá tác động chuyển dữ liệu cá nhân xuyên biên giới trong trường hợp có chuyển dữ liệu cá nhân xuy
+       ên biên giới. #### Điều 23. Trách nhiệm của tổ chức kinh doanh dịch vụ xử lý dữ liệu cá nhân 1.
+
+  Summary: top-3 scores = [0.5371, 0.5214, 0.5207]
+
+──────────────────────────────────────────────────────────────────────
+Query 3: Chữ ký điện tử có giá trị pháp lý không?
+Gold Answer: Có — chữ ký điện tử chuyên dùng bảo đảm an toàn hoặc chữ ký số có giá trị pháp lý tương đương chữ ký tay trên văn bản giấy (Luật GDĐT 20/2023, Điều 23 Khoản 2)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.6159] (source: 2023_867 + 868_20-2023-QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2023, topic=giao_dịch_điện_tử
+     child chunk:
+       #### Điều 23. Giá trị pháp lý của chữ ký điện tử 1. Chữ ký điện tử không bị phủ nhận giá trị pháp lý
+        chỉ vì được thể hiện dưới dạng chữ ký điện tử. 2. Chữ ký điện tử chuyên dùng bảo đảm an toàn hoặc c
+       hữ ký số có giá trị pháp lý tương đương chữ ký của cá nhân đó trong văn bản giấy.
+
+  #2 [score=0.4986] (source: 2023_867 + 868_20-2023-QH15.md)
+     metadata: doc_type=luật, year=2023, topic=giao_dịch_điện_tử
+     child chunk:
+       Chữ ký số bảo đảm tính xác thực, tính toàn vẹn và tính chống chối bỏ nhưng không bảo đảm tính bí mật
+        của thông điệp dữ liệu. 13. **Chứng thư chữ ký điện tử** là thông điệp dữ liệu nhằm xác nhận cơ qua
+       n, tổ chức, cá nhân được chứng thực là người ký chữ ký điện tử. Chứng thư chữ ký điện tử đối với chữ
+        ký số được gọi là chứng thư chữ ký số. 14.
+
+  #3 [score=0.4919] (source: 2023_867 + 868_20-2023-QH15.md)
+     metadata: doc_type=luật, year=2023, topic=giao_dịch_điện_tử
+     child chunk:
+       Chữ ký số là chữ ký điện tử đáp ứng đủ các yêu cầu sau đây:    * a) Xác nhận chủ thể ký và khẳng địn
+       h sự chấp thuận của chủ thể ký đối với thông điệp dữ liệu;    * b) Dữ liệu tạo chữ ký số chỉ gắn duy
+        nhất với nội dung của thông điệp dữ liệu được chấp thuận;    * c) Dữ liệu tạo chữ ký số chỉ thuộc s
+       ự kiểm soát của chủ thể ký tại thời điểm ký;    * d) Mọi thay đổi đối với thông điệp dữ liệu sau thờ
+       i điểm ký đều có thể bị phát hiện;    * đ) Phải được bảo đảm bởi chứng thư chữ ký số. Trường hợp chữ
+
+  Summary: top-3 scores = [0.6159, 0.4986, 0.4919]
+
+──────────────────────────────────────────────────────────────────────
+Query 4: Mức phạt vi phạm bảo vệ dữ liệu cá nhân?
+Gold Answer: Phạt tiền tối đa 03 tỷ đồng cho vi phạm hành chính trong lĩnh vực BVDLCN (Luật 91/2025, Điều 8 Khoản 5)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.6854] (source: 91_2025_QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Tổ chức, cá nhân có hành vi vi phạm quy định của Luật này và quy định khác của pháp luật có liên qua
+       n đến bảo vệ dữ liệu cá nhân thì tùy theo tính chất, mức độ, hậu quả của hành vi vi phạm có thể bị x
+       ử phạt hành chính hoặc bị truy cứu trách nhiệm hình sự; nếu gây thiệt hại thì phải bồi thường theo q
+       uy định của pháp luật. 2. Việc xử phạt vi phạm hành chính trong lĩnh vực bảo vệ dữ liệu cá nhân thực
+        hiện theo quy định tại các khoản 3, 4, 5, 6 và 7 Điều này và pháp luật về xử lý vi phạm hành chính.
+
+  #2 [score=0.6604] (source: 91_2025_QH15.md)
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       4. Mức phạt tiền tối đa trong xử phạt vi phạm hành chính đối với tổ chức có hành vi vi phạm quy định
+        chuyển dữ liệu cá nhân xuyên biên giới là 5% doanh thu của năm trước liền kề của tổ chức đó; trường
+        hợp không có doanh thu của năm trước liền kề hoặc mức phạt tính theo doanh thu thấp hơn mức phạt ti
+       ền tối đa theo quy định tại khoản 5 Điều này thì áp dụng mức phạt tiền theo quy định tại khoản 5 Điề
+       u này. 5. Mức phạt tiền tối đa trong xử phạt vi phạm hành chính đối với các hành vi vi phạm khác tro
+
+  #3 [score=0.6225] (source: 91_2025_QH15.md)
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Mức phạt tiền tối đa quy định tại các khoản 3, 4 và 5 Điều này được áp dụng đối với tổ chức; cá nhân
+        thực hiện cùng hành vi vi phạm thì mức phạt tiền tối đa bằng một phần hai mức phạt tiền đối với tổ 
+       chức. 7. Chính phủ quy định phương pháp tính khoản thu có được từ việc thực hiện hành vi vi phạm phá
+       p luật về bảo vệ dữ liệu cá nhân. ---  ## CHƯƠNG II: BẢO VỆ DỮ LIỆU CÁ NHÂN  ### MỤC 1. BẢO VỆ DỮ LI
+       ỆU CÁ NHÂN TRONG QUÁ TRÌNH XỬ LÝ DỮ LIỆU CÁ NHÂN  #### Điều 9.
+
+  Summary: top-3 scores = [0.6854, 0.6604, 0.6225]
+
+──────────────────────────────────────────────────────────────────────
+Query 5: Quyền của chủ thể dữ liệu cá nhân gồm những gì?
+Gold Answer: 6 nhóm quyền: được biết, đồng ý/rút lại đồng ý, xem/chỉnh sửa, yêu cầu cung cấp/xóa/hạn chế/phản đối, khiếu nại/khởi kiện, yêu cầu cơ quan bảo vệ DLCN (Luật 91/2025, Điều 4 Khoản 1)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.7451] (source: 91_2025_QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Quyền và nghĩa vụ của chủ thể dữ liệu cá nhân 1. Quyền của chủ thể dữ liệu cá nhân bao gồm:    * a) 
+       Được biết về hoạt động xử lý dữ liệu cá nhân;    * b) Đồng ý hoặc không đồng ý, yêu cầu rút lại sự đ
+       ồng ý cho phép xử lý dữ liệu cá nhân;    * c) Xem, chỉnh sửa hoặc yêu cầu chỉnh sửa dữ liệu cá nhân;
+           * d) Yêu cầu cung cấp, xóa, hạn chế xử lý dữ liệu cá nhân; gửi yêu cầu phản đối xử lý dữ liệu cá
+        nhân;    * đ) Khiếu nại, tố cáo, khởi kiện, yêu cầu bồi thường thiệt hại theo quy định của pháp luậ
+
+  #2 [score=0.6923] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       **Quyền tự bảo vệ**: Chủ thể dữ liệu có quyền tự bảo vệ theo quy định của Bộ luật Dân sự, luật khác 
+       có liên quan và Nghị định này, hoặc yêu cầu cơ quan, tổ chức có thẩm quyền thực hiện các phương thức
+        bảo vệ quyền dân sự theo quy định tại Điều 11 Bộ luật Dân sự. #### Điều 10. Nghĩa vụ của chủ thể dữ
+        liệu 1. Tự bảo vệ dữ liệu cá nhân của mình; yêu cầu các tổ chức, cá nhân khác có liên quan bảo vệ d
+       ữ liệu cá nhân của mình. 2.
+
+  #3 [score=0.6892] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       **Quyền được biết**: Chủ thể dữ liệu được biết về hoạt động xử lý dữ liệu cá nhân của mình, trừ trườ
+       ng hợp luật có quy định khác. 2. **Quyền đồng ý**: Chủ thể dữ liệu được đồng ý hoặc không đồng ý cho
+        phép xử lý dữ liệu cá nhân của mình, trừ trường hợp quy định tại Điều 17 Nghị định này. 3. **Quyền 
+       truy cập**: Chủ thể dữ liệu được truy cập để xem, chỉnh sửa hoặc yêu cầu chỉnh sửa dữ liệu cá nhân c
+       ủa mình, trừ trường hợp luật có quy định khác.
+
+  Summary: top-3 scores = [0.7451, 0.6923, 0.6892]
+
+======================================================================
+=== ParentChildChunker(child_sentences=3) ===
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+Query 1: Dữ liệu cá nhân nhạy cảm bao gồm những gì?
+Gold Answer: 12 loại: nguồn gốc chủng tộc/dân tộc, quan điểm chính trị/tôn giáo, đời sống riêng tư, sức khỏe, sinh trắc học, di truyền, đời sống tình dục, dữ liệu tội phạm, vị trí, tên đăng nhập/mật khẩu, tài chính/tín dụng, hành vi trên mạng (NĐ 356/2025, Điều 4)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.6716] (source: 356_2025_ND-CP.md) << TOP-1
+     metadata: doc_type=nghị_định, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       #### Điều 4. Danh mục dữ liệu cá nhân nhạy cảm 1. Dữ liệu cá nhân nhạy cảm bao gồm:    * a) Dữ liệu 
+       tiết lộ nguồn gốc chủng tộc, nguồn gốc dân tộc;    * b) Quan điểm về chính trị, tôn giáo, tín ngưỡng
+       ;    * c) Thông tin về đời sống riêng tư, bí mật cá nhân, bí mật gia đình;    * d) Tình trạng sức kh
+       ỏe;    * đ) Dữ liệu sinh trắc học, đặc điểm di truyền;    * e) Dữ liệu tiết lộ đời sống tình dục, xu
+        hướng tình dục của cá nhân;    * g) Dữ liệu về tội phạm, vi phạm pháp luật được thu thập, lưu trữ b
+     parent chunk (preview):
+       #### Điều 4. Danh mục dữ liệu cá nhân nhạy cảm 1. Dữ liệu cá nhân nhạy cảm bao gồm:    * a) Dữ liệu tiết lộ nguồn gốc chủng tộc, nguồn gốc dân tộc;    * b) Quan điểm về chính trị, tôn giáo, tín ngưỡng;    * c) Thông tin về đời sống riêng tư, bí mật cá nhân, bí mật gia đình;    * d) Tình trạng sức kh...
+
+  #2 [score=0.6518] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       **Dữ liệu cá nhân nhạy cảm** là dữ liệu cá nhân gắn liền với quyền riêng tư của cá nhân mà khi bị xâ
+       m phạm sẽ gây ảnh hưởng trực tiếp tới quyền và lợi ích hợp pháp của cá nhân gồm:    * a) Quan điểm c
+       hính trị, quan điểm tôn giáo;    * b) Tình trạng sức khỏe và đời tư được ghi trong hồ sơ bệnh án, kh
+       ông bao gồm thông tin về nhóm máu;    * c) Thông tin liên quan đến nguồn gốc chủng tộc, nguồn gốc dâ
+       n tộc;    * d) Thông tin về đặc điểm di truyền được thừa hưởng hoặc có được của cá nhân;    * đ) Thô
+     parent chunk (preview):
+       #### Điều 2. Giải thích từ ngữ Trong Nghị định này, các từ ngữ dưới đây được hiểu như sau: 1. **Dữ liệu cá nhân** là thông tin dưới dạng ký hiệu, chữ viết, chữ số, hình ảnh, âm thanh hoặc dạng tương tự trên môi trường điện tử gắn liền với một con người cụ thể hoặc giúp xác định một con người cụ thể....
+
+  #3 [score=0.6291] (source: 91_2025_QH15.md)
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       #### Điều 2. Giải thích từ ngữ Trong Luật này, các từ ngữ dưới đây được hiểu như sau: 1. **Dữ liệu c
+       á nhân** là dữ liệu số hoặc thông tin dưới dạng khác xác định hoặc giúp xác định một con người cụ th
+       ể, bao gồm: dữ liệu cá nhân cơ bản và dữ liệu cá nhân nhạy cảm.
+     parent chunk (preview):
+       #### Điều 2. Giải thích từ ngữ Trong Luật này, các từ ngữ dưới đây được hiểu như sau: 1. **Dữ liệu cá nhân** là dữ liệu số hoặc thông tin dưới dạng khác xác định hoặc giúp xác định một con người cụ thể, bao gồm: dữ liệu cá nhân cơ bản và dữ liệu cá nhân nhạy cảm. Dữ liệu cá nhân sau khi khử nhận dạn...
+
+  Summary: top-3 scores = [0.6716, 0.6518, 0.6291]
+
+──────────────────────────────────────────────────────────────────────
+Query 2: Trách nhiệm của doanh nghiệp nước ngoài xử lý dữ liệu người Việt?
+Gold Answer: Phải tuân thủ Luật BVDLCN Việt Nam nếu trực tiếp tham gia hoặc liên quan đến xử lý DLCN của công dân VN và người gốc Việt (Luật 91/2025, Điều 1 Khoản 2c)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.5313] (source: 91_2025_QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       2. Trách nhiệm của bên xử lý dữ liệu cá nhân như sau:    * a) Chỉ được tiếp nhận dữ liệu cá nhân sau
+        khi có thỏa thuận, hợp đồng về xử lý dữ liệu cá nhân với bên kiểm soát dữ liệu cá nhân, bên kiểm so
+       át và xử lý dữ liệu cá nhân;    * b) Xử lý dữ liệu cá nhân theo đúng thỏa thuận, hợp đồng ký kết với
+        bên kiểm soát dữ liệu cá nhân, bên kiểm soát và xử lý dữ liệu cá nhân;    * c) Thực hiện đầy đủ các
+        biện pháp bảo vệ dữ liệu cá nhân theo quy định của Luật này và các quy định khác của pháp luật có l
+     parent chunk (preview):
+       #### Điều 37. Trách nhiệm của bên kiểm soát dữ liệu cá nhân, bên xử lý dữ liệu cá nhân, bên kiểm soát và xử lý dữ liệu cá nhân 1. Trách nhiệm của bên kiểm soát dữ liệu cá nhân như sau:    * a) Nêu rõ trách nhiệm, quyền và nghĩa vụ phải tuân thủ của các bên trong thỏa thuận, hợp đồng có liên quan đến...
+
+  #2 [score=0.5176] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Thực hiện đầy đủ các biện pháp bảo vệ dữ liệu cá nhân quy định tại Nghị định này và các văn bản pháp
+        luật khác có liên quan. 4. Bên Xử lý dữ liệu cá nhân chịu trách nhiệm trước chủ thể dữ liệu về các 
+       thiệt hại do quá trình xử lý dữ liệu cá nhân gây ra.
+     parent chunk (preview):
+       #### Điều 39. Trách nhiệm của Bên Xử lý dữ liệu cá nhân 1. Chỉ tiếp nhận dữ liệu cá nhân sau khi có hợp đồng hoặc thỏa thuận về xử lý dữ liệu với Bên Kiểm soát dữ liệu cá nhân. 2. Xử lý dữ liệu cá nhân theo đúng hợp đồng hoặc thỏa thuận ký kết với Bên Kiểm soát dữ liệu cá nhân. 3. Thực hiện đầy đủ c...
+
+  #3 [score=0.5108] (source: 91_2025_QH15.md)
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Trách nhiệm bảo vệ dữ liệu cá nhân của cơ quan, tổ chức, cá nhân trong quản lý, sử dụng người lao độ
+       ng được quy định như sau:    * a) Tuân thủ quy định của Luật này, pháp luật về lao động, việc làm, p
+       háp luật về dữ liệu và quy định khác của pháp luật có liên quan;    * b) Dữ liệu cá nhân của người l
+       ao động phải lưu trữ trong thời hạn theo quy định của pháp luật hoặc theo thỏa thuận;    * c) Phải x
+       óa, hủy dữ liệu cá nhân của người lao động khi chấm dứt hợp đồng, trừ trường hợp theo thỏa thuận hoặ
+     parent chunk (preview):
+       #### Điều 25. Bảo vệ dữ liệu cá nhân trong tuyển dụng, quản lý, sử dụng người lao động 1. Trách nhiệm bảo vệ dữ liệu cá nhân của cơ quan, tổ chức, cá nhân trong tuyển dụng lao động được quy định như sau:    * a) Chỉ được yêu cầu cung cấp các thông tin phục vụ cho mục đích tuyển dụng của cơ quan, tổ ...
+
+  Summary: top-3 scores = [0.5313, 0.5176, 0.5108]
+
+──────────────────────────────────────────────────────────────────────
+Query 3: Chữ ký điện tử có giá trị pháp lý không?
+Gold Answer: Có — chữ ký điện tử chuyên dùng bảo đảm an toàn hoặc chữ ký số có giá trị pháp lý tương đương chữ ký tay trên văn bản giấy (Luật GDĐT 20/2023, Điều 23 Khoản 2)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.6368] (source: 2023_867 + 868_20-2023-QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2023, topic=giao_dịch_điện_tử
+     child chunk:
+       CHỮ KÝ ĐIỆN TỬ
+     parent chunk (preview):
+       #### Điều 21. Yêu cầu đối với lưu trữ, xử lý chứng thư điện tử 1. Việc lưu trữ chứng thư điện tử phải tuân thủ quy định về lưu trữ thông điệp dữ liệu tại Điều 13 của Luật này. 2. Hệ thống thông tin phục vụ lưu trữ, xử lý chứng thư điện tử phải đáp ứng yêu cầu bảo đảm an toàn thông tin mạng tối thiểu...
+
+  #2 [score=0.5672] (source: 2023_867 + 868_20-2023-QH15.md)
+     metadata: doc_type=luật, year=2023, topic=giao_dịch_điện_tử
+     child chunk:
+       #### Điều 23. Giá trị pháp lý của chữ ký điện tử 1. Chữ ký điện tử không bị phủ nhận giá trị pháp lý
+        chỉ vì được thể hiện dưới dạng chữ ký điện tử.
+     parent chunk (preview):
+       #### Điều 23. Giá trị pháp lý của chữ ký điện tử 1. Chữ ký điện tử không bị phủ nhận giá trị pháp lý chỉ vì được thể hiện dưới dạng chữ ký điện tử. 2. Chữ ký điện tử chuyên dùng bảo đảm an toàn hoặc chữ ký số có giá trị pháp lý tương đương chữ ký của cá nhân đó trong văn bản giấy. 3. Trường hợp pháp...
+
+  #3 [score=0.5108] (source: 2023_867 + 868_20-2023-QH15.md)
+     metadata: doc_type=luật, year=2023, topic=giao_dịch_điện_tử
+     child chunk:
+       #### Điều 22. Chữ ký điện tử 1. Chữ ký điện tử được phân loại theo phạm vi sử dụng bao gồm:    * a) 
+       Chữ ký điện tử chuyên dùng là chữ ký điện tử do cơ quan, tổ chức tạo lập, sử dụng riêng cho hoạt độn
+       g của cơ quan, tổ chức đó phù hợp với chức năng, nhiệm vụ;    * b) Chữ ký số công cộng là chữ ký số 
+       được sử dụng trong hoạt động công cộng và được bảo đảm bởi chứng thư chữ ký số công cộng;    * c) Ch
+       ữ ký số chuyên dùng công vụ là chữ ký số được sử dụng trong hoạt động công vụ và được bảo đảm bởi ch
+     parent chunk (preview):
+       #### Điều 22. Chữ ký điện tử 1. Chữ ký điện tử được phân loại theo phạm vi sử dụng bao gồm:    * a) Chữ ký điện tử chuyên dùng là chữ ký điện tử do cơ quan, tổ chức tạo lập, sử dụng riêng cho hoạt động của cơ quan, tổ chức đó phù hợp với chức năng, nhiệm vụ;    * b) Chữ ký số công cộng là chữ ký số ...
+
+  Summary: top-3 scores = [0.6368, 0.5672, 0.5108]
+
+──────────────────────────────────────────────────────────────────────
+Query 4: Mức phạt vi phạm bảo vệ dữ liệu cá nhân?
+Gold Answer: Phạt tiền tối đa 03 tỷ đồng cho vi phạm hành chính trong lĩnh vực BVDLCN (Luật 91/2025, Điều 8 Khoản 5)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.7038] (source: 91_2025_QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       Mức phạt tiền tối đa quy định tại các khoản 3, 4 và 5 Điều này được áp dụng đối với tổ chức; cá nhân
+        thực hiện cùng hành vi vi phạm thì mức phạt tiền tối đa bằng một phần hai mức phạt tiền đối với tổ 
+       chức. 7. Chính phủ quy định phương pháp tính khoản thu có được từ việc thực hiện hành vi vi phạm phá
+       p luật về bảo vệ dữ liệu cá nhân.
+     parent chunk (preview):
+       #### Điều 8. Xử lý vi phạm pháp luật về bảo vệ dữ liệu cá nhân 1. Tổ chức, cá nhân có hành vi vi phạm quy định của Luật này và quy định khác của pháp luật có liên quan đến bảo vệ dữ liệu cá nhân thì tùy theo tính chất, mức độ, hậu quả của hành vi vi phạm có thể bị xử phạt hành chính hoặc bị truy cứu...
+
+  #2 [score=0.6367] (source: 91_2025_QH15.md)
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       2. Việc xử phạt vi phạm hành chính trong lĩnh vực bảo vệ dữ liệu cá nhân thực hiện theo quy định tại
+        các khoản 3, 4, 5, 6 và 7 Điều này và pháp luật về xử lý vi phạm hành chính. 3.
+     parent chunk (preview):
+       #### Điều 8. Xử lý vi phạm pháp luật về bảo vệ dữ liệu cá nhân 1. Tổ chức, cá nhân có hành vi vi phạm quy định của Luật này và quy định khác của pháp luật có liên quan đến bảo vệ dữ liệu cá nhân thì tùy theo tính chất, mức độ, hậu quả của hành vi vi phạm có thể bị xử phạt hành chính hoặc bị truy cứu...
+
+  #3 [score=0.6219] (source: 91_2025_QH15.md)
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       5. Mức phạt tiền tối đa trong xử phạt vi phạm hành chính đối với các hành vi vi phạm khác trong lĩnh
+        vực bảo vệ dữ liệu cá nhân là 03 tỷ đồng. 6.
+     parent chunk (preview):
+       #### Điều 8. Xử lý vi phạm pháp luật về bảo vệ dữ liệu cá nhân 1. Tổ chức, cá nhân có hành vi vi phạm quy định của Luật này và quy định khác của pháp luật có liên quan đến bảo vệ dữ liệu cá nhân thì tùy theo tính chất, mức độ, hậu quả của hành vi vi phạm có thể bị xử phạt hành chính hoặc bị truy cứu...
+
+  Summary: top-3 scores = [0.7038, 0.6367, 0.6219]
+
+──────────────────────────────────────────────────────────────────────
+Query 5: Quyền của chủ thể dữ liệu cá nhân gồm những gì?
+Gold Answer: 6 nhóm quyền: được biết, đồng ý/rút lại đồng ý, xem/chỉnh sửa, yêu cầu cung cấp/xóa/hạn chế/phản đối, khiếu nại/khởi kiện, yêu cầu cơ quan bảo vệ DLCN (Luật 91/2025, Điều 4 Khoản 1)
+──────────────────────────────────────────────────────────────────────
+
+  #1 [score=0.7468] (source: 91_2025_QH15.md) << TOP-1
+     metadata: doc_type=luật, year=2025, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       #### Điều 4. Quyền và nghĩa vụ của chủ thể dữ liệu cá nhân 1. Quyền của chủ thể dữ liệu cá nhân bao 
+       gồm:    * a) Được biết về hoạt động xử lý dữ liệu cá nhân;    * b) Đồng ý hoặc không đồng ý, yêu cầu
+        rút lại sự đồng ý cho phép xử lý dữ liệu cá nhân;    * c) Xem, chỉnh sửa hoặc yêu cầu chỉnh sửa dữ 
+       liệu cá nhân;    * d) Yêu cầu cung cấp, xóa, hạn chế xử lý dữ liệu cá nhân; gửi yêu cầu phản đối xử 
+       lý dữ liệu cá nhân;    * đ) Khiếu nại, tố cáo, khởi kiện, yêu cầu bồi thường thiệt hại theo quy định
+     parent chunk (preview):
+       #### Điều 4. Quyền và nghĩa vụ của chủ thể dữ liệu cá nhân 1. Quyền của chủ thể dữ liệu cá nhân bao gồm:    * a) Được biết về hoạt động xử lý dữ liệu cá nhân;    * b) Đồng ý hoặc không đồng ý, yêu cầu rút lại sự đồng ý cho phép xử lý dữ liệu cá nhân;    * c) Xem, chỉnh sửa hoặc yêu cầu chỉnh sửa dữ ...
+
+  #2 [score=0.7227] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       #### Điều 9. Quyền của chủ thể dữ liệu 1. **Quyền được biết**: Chủ thể dữ liệu được biết về hoạt độn
+       g xử lý dữ liệu cá nhân của mình, trừ trường hợp luật có quy định khác.
+     parent chunk (preview):
+       #### Điều 9. Quyền của chủ thể dữ liệu 1. **Quyền được biết**: Chủ thể dữ liệu được biết về hoạt động xử lý dữ liệu cá nhân của mình, trừ trường hợp luật có quy định khác. 2. **Quyền đồng ý**: Chủ thể dữ liệu được đồng ý hoặc không đồng ý cho phép xử lý dữ liệu cá nhân của mình, trừ trường hợp quy đ...
+
+  #3 [score=0.6706] (source: 13_2023_ND-CP.md)
+     metadata: doc_type=nghị_định, year=2023, topic=bảo_vệ_dữ_liệu
+     child chunk:
+       **Quyền truy cập**: Chủ thể dữ liệu được truy cập để xem, chỉnh sửa hoặc yêu cầu chỉnh sửa dữ liệu c
+       á nhân của mình, trừ trường hợp luật có quy định khác. 4. **Quyền rút lại sự đồng ý**: Chủ thể dữ li
+       ệu được quyền rút lại sự đồng ý của mình, trừ trường hợp luật có quy định khác.
+     parent chunk (preview):
+       #### Điều 9. Quyền của chủ thể dữ liệu 1. **Quyền được biết**: Chủ thể dữ liệu được biết về hoạt động xử lý dữ liệu cá nhân của mình, trừ trường hợp luật có quy định khác. 2. **Quyền đồng ý**: Chủ thể dữ liệu được đồng ý hoặc không đồng ý cho phép xử lý dữ liệu cá nhân của mình, trừ trường hợp quy đ...
+
+  Summary: top-3 scores = [0.7468, 0.7227, 0.6706]
+
+======================================================================
+=== COMPARISON SUMMARY ===
+======================================================================
+Model: AITeamVN/Vietnamese_Embedding (dim=1024)
+Documents: 5
+SentenceChunker(5) total chunks: 528
+ParentChildChunker  total chunks: 966
+
+Query    SentenceChunker(5)          ParentChild          Winner
+------ -------------------- -------------------- ---------------
+Q1                   0.6693               0.6716     ParentChild
+Q2                   0.5371               0.5313 SentenceChunker
+Q3                   0.6159               0.6368     ParentChild
+Q4                   0.6854               0.7038     ParentChild
+Q5                   0.7451               0.7468     ParentChild
+
+Avg                  0.6506               0.6581
+
+SentenceChunker wins: 1, ParentChild wins: 4

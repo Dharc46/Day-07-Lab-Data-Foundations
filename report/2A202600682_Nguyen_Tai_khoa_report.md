@@ -1,8 +1,8 @@
 # Báo Cáo Lab 7: Embedding & Vector Store
 
-**Họ tên:** [Tên sinh viên]
-**Nhóm:** [Tên nhóm]
-**Ngày:** [Ngày nộp]
+**Họ tên:** Nguyễn Tài Khoa
+**Nhóm:** E5
+**Ngày:** 6/5/2026
 
 ---
 
@@ -87,25 +87,41 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 
 ### Strategy Của Tôi
 
-**Loại:** SentenceChunker (tuned: `max_sentences_per_chunk=5`)
+**Loại:** ParentChildChunker (custom)
 
 **Mô tả cách hoạt động:**
-> SentenceChunker tách văn bản theo ranh giới câu (dấu `. `, `! `, `? `, `.\n`) rồi gom nhóm mỗi 5 câu thành 1 chunk. So với default (3 câu), 5 câu giữ được trọn vẹn ý của từng Khoản trong điều luật. Strategy này không cắt giữa câu nên mỗi chunk luôn có nghĩa hoàn chỉnh, phù hợp cho retrieval.
+> ParentChildChunker tạo 2 tầng chunk: parent là nguyên 1 Điều luật (tách bằng regex `#### Điều \d+`), child là từng nhóm 3 câu trong Điều đó (dùng SentenceChunker bên trong). Khi search, embedding match trên child chunk (nhỏ, chính xác), nhưng mỗi child giữ reference đến parent chunk (toàn bộ Điều) để trả về đầy đủ context. Kỹ thuật này phổ biến trong production RAG (LlamaIndex, LangChain đều có built-in).
 
 **Tại sao tôi chọn strategy này cho domain nhóm?**
-> Văn bản luật Việt Nam có cấu trúc Điều → Khoản → Điểm, mỗi khoản thường gồm 3-6 câu. SentenceChunker với 5 câu/chunk giữ được context trọn vẹn của từng khoản. Baseline cho thấy RecursiveChunker tạo chunk quá nhỏ (70-127 chars) và FixedSizeChunker cắt giữa câu — cả hai đều mất context.
+> Văn bản luật Việt Nam có cấu trúc tự nhiên theo Điều — đây chính là đơn vị tham chiếu chuẩn trong pháp luật. Child chunk nhỏ giúp embedding chính xác hơn (avg 294-429 chars), trong khi parent chunk (avg 1058-2542 chars) giữ trọn ngữ cảnh Điều luật. Benchmark cho thấy ParentChildChunker thắng SentenceChunker(5) ở 4/5 queries với avg score cao hơn (0.6581 vs 0.6506).
 
 **Code snippet (nếu custom):**
 ```python
-chunker = SentenceChunker(max_sentences_per_chunk=5)
+class ParentChildChunker:
+    def __init__(self, parent_separator=r"(?=####\s+Điều\s+\d+)", child_max_sentences=3):
+        self.parent_separator = parent_separator
+        self.child_chunker = SentenceChunker(max_sentences_per_chunk=child_max_sentences)
+
+    def chunk(self, text):
+        parents = re.split(self.parent_separator, text)
+        results = []
+        for parent in parents:
+            children = self.child_chunker.chunk(parent)
+            for child in children:
+                results.append({"child": child, "parent": parent})
+        return results
 ```
 
 ### So Sánh: Strategy của tôi vs Baseline
 
 | Tài liệu | Strategy | Chunk Count | Avg Length | Retrieval Quality? |
 |-----------|----------|-------------|------------|--------------------|
-| NĐ 13/2023 | best baseline (SentenceChunker default) | 215 | 315 | Chờ kết quả embeddings |
-| NĐ 13/2023 | **SentenceChunker(5) của tôi** | — | — | Chờ kết quả embeddings |
+| NĐ 13/2023 | best baseline (SentenceChunker default) | 215 | 315 | Chunk nhỏ, thiếu context khoản |
+| NĐ 13/2023 | **ParentChild của tôi** | 230 children / 45 parents | child 294, parent 1509 | Tốt — child chính xác, parent giữ trọn Điều |
+| Luật An ninh mạng | best baseline (SentenceChunker default) | 130 | 490 | Chunk vừa nhưng đôi khi tách khoản |
+| Luật An ninh mạng | **ParentChild của tôi** | 148 children / 44 parents | child 429, parent 1448 | Tốt — top-3 đều từ đúng Điều luật |
+| Luật GDĐT | best baseline (SentenceChunker default) | 155 | 368 | Chunk nhỏ, tách giữa điều khoản |
+| Luật GDĐT | **ParentChild của tôi** | 178 children / 54 parents | child 320, parent 1058 | Tốt — Q3 score 0.6368 > baseline 0.6159 |
 
 ### So Sánh Với Thành Viên Khác
 
@@ -231,13 +247,13 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 
 | # | Query | Top-1 Retrieved Chunk (tóm tắt) | Score | Relevant? | Agent Answer (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | Dữ liệu cá nhân nhạy cảm bao gồm những gì? | NĐ 356/2025 Điều 4: Danh mục DLCN nhạy cảm — liệt kê 12 loại (chủng tộc, chính trị, sức khỏe, sinh trắc học…). Parent chunk chứa trọn Điều 4. | 0.6716 | Có | Trả về đúng điều luật liệt kê 12 loại DLCN nhạy cảm |
+| 2 | Trách nhiệm của DN nước ngoài xử lý dữ liệu người Việt? | Luật 91/2025: Trách nhiệm bên xử lý DLCN — phải có thỏa thuận, hợp đồng, thực hiện biện pháp bảo vệ. Parent chunk chứa trọn điều về trách nhiệm. | 0.5313 | Một phần | Trả về trách nhiệm bên xử lý DLCN chung, chưa đặc thù "nước ngoài" |
+| 3 | Chữ ký điện tử có giá trị pháp lý không? | Luật GDĐT Điều 23: Chữ ký điện tử chuyên dùng/chữ ký số có giá trị pháp lý tương đương chữ ký tay. Parent chunk chứa trọn Điều 23. | 0.6368 | Có | Trả về đúng Điều 23 Khoản 2 về giá trị pháp lý |
+| 4 | Mức phạt vi phạm bảo vệ dữ liệu cá nhân? | Luật 91/2025 Điều 8: Mức phạt tối đa, top-3 đều cùng Điều 8. Parent chunk chứa trọn điều xử phạt với mức 03 tỷ đồng. | 0.7038 | Có | Trả về đúng điều khoản xử phạt, child #3 chứa mức 03 tỷ |
+| 5 | Quyền của chủ thể dữ liệu cá nhân gồm những gì? | Luật 91/2025 Điều 4: 6 nhóm quyền — được biết, đồng ý, xem/chỉnh sửa, yêu cầu xóa/hạn chế, khiếu nại, yêu cầu cơ quan BVDLCN. Parent chunk chứa trọn Điều 4. | 0.7468 | Có | Trả về đúng điều khoản liệt kê đầy đủ 6 nhóm quyền |
 
-**Bao nhiêu queries trả về chunk relevant trong top-3?** __ / 5
+**Bao nhiêu queries trả về chunk relevant trong top-3?** 5 / 5
 
 ---
 
