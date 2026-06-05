@@ -42,27 +42,28 @@
 
 ### Domain & Lý Do Chọn
 
-**Domain:** [ví dụ: Customer support FAQ, Vietnamese law, cooking recipes, ...]
+**Domain:** Vietnamese law — an ninh mạng, bảo vệ dữ liệu cá nhân, giao dịch điện tử
 
 **Tại sao nhóm chọn domain này?**
-> *Viết 2-3 câu:* Vietnamese law, dữ liệu open public, dễ kiếm, cấu trúc rõ ràng, dễ tách và kiểm tra tính hiệu quả
+> Luật Việt Nam là dữ liệu public domain, dễ tiếp cận và có cấu trúc rõ ràng theo Chương/Điều/Khoản. Nội dung pháp lý có tính chính xác cao nên dễ kiểm tra retrieval quality — gold answer có thể trích dẫn trực tiếp từ điều luật cụ thể. Các văn bản liên quan đến công nghệ (an ninh mạng, dữ liệu cá nhân, giao dịch điện tử) phù hợp với kiến thức ngành CNTT.
 
 ### Data Inventory
 
 | # | Tên tài liệu | Nguồn | Số ký tự | Metadata đã gán |
 |---|--------------|-------|----------|-----------------|
-| 1 | | | | |
-| 2 | | | | |
-| 3 | | | | |
-| 4 | | | | |
-| 5 | | | | |
+| 1 | NĐ 13/2023/NĐ-CP — Bảo vệ dữ liệu cá nhân | Chính phủ | 88,231 | doc_type: nghị_định, year: 2023, topic: bảo_vệ_dữ_liệu |
+| 2 | Luật 24/2018/QH14 — An ninh mạng | Quốc hội | 82,915 | doc_type: luật, year: 2018, topic: an_ninh_mạng |
+| 3 | Luật 20/2023/QH15 — Giao dịch điện tử | Quốc hội | 77,391 | doc_type: luật, year: 2023, topic: giao_dịch_điện_tử |
+| 4 | NĐ 356/2025/NĐ-CP — Chi tiết Luật BVDLCN | Chính phủ | 147,603 | doc_type: nghị_định, year: 2025, topic: bảo_vệ_dữ_liệu |
+| 5 | Luật 91/2025/QH15 — Bảo vệ dữ liệu cá nhân | Quốc hội | 71,777 | doc_type: luật, year: 2025, topic: bảo_vệ_dữ_liệu |
 
 ### Metadata Schema
 
 | Trường metadata | Kiểu | Ví dụ giá trị | Tại sao hữu ích cho retrieval? |
 |----------------|------|---------------|-------------------------------|
-| | | | |
-| | | | |
+| doc_type | str | "luật" / "nghị_định" | Lọc theo loại văn bản — luật quy định nguyên tắc, nghị định quy định chi tiết |
+| year | int | 2025 | Lọc theo năm ban hành — ưu tiên văn bản mới nhất khi có xung đột |
+| topic | str | "bảo_vệ_dữ_liệu" | Lọc theo chủ đề — thu hẹp phạm vi tìm kiếm khi query thuộc domain cụ thể |
 
 ---
 
@@ -74,31 +75,37 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 
 | Tài liệu | Strategy | Chunk Count | Avg Length | Preserves Context? |
 |-----------|----------|-------------|------------|-------------------|
-| | FixedSizeChunker (`fixed_size`) | | | |
-| | SentenceChunker (`by_sentences`) | | | |
-| | RecursiveChunker (`recursive`) | | | |
+| NĐ 13/2023 | FixedSizeChunker (`fixed_size`) | 137 | 497 | Không — cắt giữa câu/điều |
+| NĐ 13/2023 | SentenceChunker (`by_sentences`) | 215 | 315 | Tốt — giữ trọn câu |
+| NĐ 13/2023 | RecursiveChunker (`recursive`) | 530 | 127 | Trung bình — chunk quá nhỏ |
+| Luật An ninh mạng | FixedSizeChunker (`fixed_size`) | 128 | 499 | Không — cắt giữa câu/điều |
+| Luật An ninh mạng | SentenceChunker (`by_sentences`) | 130 | 490 | Tốt — giữ trọn câu |
+| Luật An ninh mạng | RecursiveChunker (`recursive`) | 893 | 70 | Kém — chunk quá nhỏ |
+| Luật GDĐT | FixedSizeChunker (`fixed_size`) | 115 | 498 | Không — cắt giữa câu/điều |
+| Luật GDĐT | SentenceChunker (`by_sentences`) | 155 | 368 | Tốt — giữ trọn câu |
+| Luật GDĐT | RecursiveChunker (`recursive`) | 611 | 93 | Kém — chunk quá nhỏ |
 
 ### Strategy Của Tôi
 
-**Loại:** [FixedSizeChunker / SentenceChunker / RecursiveChunker / custom strategy]
+**Loại:** SentenceChunker (tuned: `max_sentences_per_chunk=5`)
 
 **Mô tả cách hoạt động:**
-> *Viết 3-4 câu: strategy chunk thế nào? Dựa trên dấu hiệu gì?*
+> SentenceChunker tách văn bản theo ranh giới câu (dấu `. `, `! `, `? `, `.\n`) rồi gom nhóm mỗi 5 câu thành 1 chunk. So với default (3 câu), 5 câu giữ được trọn vẹn ý của từng Khoản trong điều luật. Strategy này không cắt giữa câu nên mỗi chunk luôn có nghĩa hoàn chỉnh, phù hợp cho retrieval.
 
 **Tại sao tôi chọn strategy này cho domain nhóm?**
-> *Viết 2-3 câu: domain có pattern gì mà strategy khai thác?*
+> Văn bản luật Việt Nam có cấu trúc Điều → Khoản → Điểm, mỗi khoản thường gồm 3-6 câu. SentenceChunker với 5 câu/chunk giữ được context trọn vẹn của từng khoản. Baseline cho thấy RecursiveChunker tạo chunk quá nhỏ (70-127 chars) và FixedSizeChunker cắt giữa câu — cả hai đều mất context.
 
 **Code snippet (nếu custom):**
 ```python
-# Paste implementation here
+chunker = SentenceChunker(max_sentences_per_chunk=5)
 ```
 
 ### So Sánh: Strategy của tôi vs Baseline
 
 | Tài liệu | Strategy | Chunk Count | Avg Length | Retrieval Quality? |
 |-----------|----------|-------------|------------|--------------------|
-| | best baseline | | | |
-| | **của tôi** | | | |
+| NĐ 13/2023 | best baseline (SentenceChunker default) | 215 | 315 | Chờ kết quả embeddings |
+| NĐ 13/2023 | **SentenceChunker(5) của tôi** | — | — | Chờ kết quả embeddings |
 
 ### So Sánh Với Thành Viên Khác
 
@@ -214,11 +221,11 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 
 | # | Query | Gold Answer |
 |---|-------|-------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 | Dữ liệu cá nhân nhạy cảm bao gồm những gì? | 12 loại: nguồn gốc chủng tộc/dân tộc, quan điểm chính trị/tôn giáo, đời sống riêng tư, sức khỏe, sinh trắc học, di truyền, đời sống tình dục, dữ liệu tội phạm, vị trí, tên đăng nhập/mật khẩu, tài chính/tín dụng, hành vi trên mạng (NĐ 356/2025, Điều 4) |
+| 2 | Trách nhiệm của doanh nghiệp nước ngoài xử lý dữ liệu người Việt? | Phải tuân thủ Luật BVDLCN Việt Nam nếu trực tiếp tham gia hoặc liên quan đến xử lý DLCN của công dân VN và người gốc Việt (Luật 91/2025, Điều 1 Khoản 2c) |
+| 3 | Chữ ký điện tử có giá trị pháp lý không? | Có — chữ ký điện tử chuyên dùng bảo đảm an toàn hoặc chữ ký số có giá trị pháp lý tương đương chữ ký tay trên văn bản giấy (Luật GDĐT 20/2023, Điều 23 Khoản 2) |
+| 4 | Mức phạt vi phạm bảo vệ dữ liệu cá nhân? | Phạt tiền tối đa 03 tỷ đồng cho vi phạm hành chính trong lĩnh vực BVDLCN (Luật 91/2025, Điều 8 Khoản 5) |
+| 5 | Quyền của chủ thể dữ liệu cá nhân gồm những gì? | 6 nhóm quyền: được biết, đồng ý/rút lại đồng ý, xem/chỉnh sửa, yêu cầu cung cấp/xóa/hạn chế/phản đối, khiếu nại/khởi kiện, yêu cầu cơ quan bảo vệ DLCN (Luật 91/2025, Điều 4 Khoản 1) |
 
 ### Kết Quả Của Tôi
 
