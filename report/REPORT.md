@@ -11,29 +11,30 @@
 ### Cosine Similarity (Ex 1.1)
 
 **High cosine similarity nghĩa là gì?**
-> *Viết 1-2 câu:*
+>  Nghĩa là hai vector có nội dung gần nhau
+
 
 **Ví dụ HIGH similarity:**
-- Sentence A:
-- Sentence B:
-- Tại sao tương đồng:
+- Sentence A: Con mèo ngồi trên thảm
+- Sentence B: Một chú mèo nằm trên tấm thảm
+- Tại sao tương đồng: Cùng chủ thể (mèo), cùng vị trí (trên thảm), chỉ khác cách diễn đạt
 
 **Ví dụ LOW similarity:**
-- Sentence A:
-- Sentence B:
-- Tại sao khác:
+- Sentence A: Con mèo ngồi trên thảm
+- Sentence B: Thị trường chứng khoán tăng 5% hôm nay
+- Tại sao khác: Hoàn toàn khác domain, không có từ hay ý nghĩa chung
 
 **Tại sao cosine similarity được ưu tiên hơn Euclidean distance cho text embeddings?**
-> *Viết 1-2 câu:*
+> *Viết 1-2 câu:* Vì các đoạn văn có độ dài và ngắn khác nhau và euclidean distance sẽ không nhận ra sự tương đồng chữa 1 bài văn và 1 bản tóm tắt dù chúng dùng cùng nội dung
 
 ### Chunking Math (Ex 1.2)
 
 **Document 10,000 ký tự, chunk_size=500, overlap=50. Bao nhiêu chunks?**
-> *Trình bày phép tính:*
-> *Đáp án:*
+> *Trình bày phép tính:* `ceil((10000 - 50) / (500 - 50)) = ceil(9950 / 450) = ceil(22.11) = 23`
+> *Đáp án:* 23 chunks
 
 **Nếu overlap tăng lên 100, chunk count thay đổi thế nào? Tại sao muốn overlap nhiều hơn?**
-> *Viết 1-2 câu:*
+> `ceil((10000 - 100) / (500 - 100)) = ceil(9900 / 400) = ceil(24.75) = 25` → 25 chunks. Overlap nhiều hơn giúp giữ được context giữa các chunk liền kề, tránh mất thông tin ở ranh giới, đổi lại cần lưu trữ nhiều hơn.
 
 ---
 
@@ -44,7 +45,7 @@
 **Domain:** [ví dụ: Customer support FAQ, Vietnamese law, cooking recipes, ...]
 
 **Tại sao nhóm chọn domain này?**
-> *Viết 2-3 câu:*
+> *Viết 2-3 câu:* Vietnamese law, dữ liệu open public, dễ kiếm, cấu trúc rõ ràng, dễ tách và kiểm tra tính hiệu quả
 
 ### Data Inventory
 
@@ -119,31 +120,74 @@ Giải thích cách tiếp cận của bạn khi implement các phần chính tr
 ### Chunking Functions
 
 **`SentenceChunker.chunk`** — approach:
-> *Viết 2-3 câu: dùng regex gì để detect sentence? Xử lý edge case nào?*
+> Dùng regex `re.split(r'(?<=[.!?])[\s]', text)` để tách câu dựa trên dấu chấm, chấm than, chấm hỏi theo sau bởi whitespace. Sau đó gom các câu thành nhóm theo `max_sentences_per_chunk`, strip whitespace và lọc bỏ chuỗi rỗng. Xử lý edge case text rỗng trả về list rỗng.
 
 **`RecursiveChunker.chunk` / `_split`** — approach:
-> *Viết 2-3 câu: algorithm hoạt động thế nào? Base case là gì?*
+> Algorithm thử từng separator theo thứ tự ưu tiên (paragraph → line → sentence → word → character). Base case: nếu `len(text) <= chunk_size` hoặc hết separator thì trả về `[text]`. Với separator rỗng `""`, cắt cứng theo `chunk_size`. Mỗi phần sau khi split nếu vẫn quá lớn sẽ recurse với danh sách separator còn lại.
 
 ### EmbeddingStore
 
 **`add_documents` + `search`** — approach:
-> *Viết 2-3 câu: lưu trữ thế nào? Tính similarity ra sao?*
+> Mỗi document được chuyển thành record dict chứa `id`, `content`, `metadata`, và `embedding` (vector từ embedding function), lưu vào list `self._store`. Khi search, embed query rồi tính dot product giữa query embedding và tất cả stored embeddings, sort giảm dần theo score và trả về top_k kết quả.
 
 **`search_with_filter` + `delete_document`** — approach:
-> *Viết 2-3 câu: filter trước hay sau? Delete bằng cách nào?*
+> Filter trước, search sau: lọc `self._store` theo metadata_filter (tất cả key-value phải match), rồi chạy similarity search trên tập đã lọc. Delete dùng list comprehension giữ lại các record có `id != doc_id`, so sánh length trước/sau để trả về True/False.
 
 ### KnowledgeBaseAgent
 
 **`answer`** — approach:
-> *Viết 2-3 câu: prompt structure? Cách inject context?*
+> Gọi `store.search(question, top_k)` để lấy top-k chunks liên quan. Nối các chunk content bằng `"\n\n"` thành context block, rồi build prompt theo format `"Context:\n{context}\n\nQuestion: {question}\nAnswer:"`. Truyền prompt này vào `llm_fn` và trả về kết quả.
 
 ### Test Results
 
 ```
-# Paste output of: pytest tests/ -v
+tests/test_solution.py::TestProjectStructure::test_root_main_entrypoint_exists PASSED
+tests/test_solution.py::TestProjectStructure::test_src_package_exists PASSED
+tests/test_solution.py::TestClassBasedInterfaces::test_chunker_classes_exist PASSED
+tests/test_solution.py::TestClassBasedInterfaces::test_mock_embedder_exists PASSED
+tests/test_solution.py::TestFixedSizeChunker::test_chunks_respect_size PASSED
+tests/test_solution.py::TestFixedSizeChunker::test_correct_number_of_chunks_no_overlap PASSED
+tests/test_solution.py::TestFixedSizeChunker::test_empty_text_returns_empty_list PASSED
+tests/test_solution.py::TestFixedSizeChunker::test_no_overlap_no_shared_content PASSED
+tests/test_solution.py::TestFixedSizeChunker::test_overlap_creates_shared_content PASSED
+tests/test_solution.py::TestFixedSizeChunker::test_returns_list PASSED
+tests/test_solution.py::TestFixedSizeChunker::test_single_chunk_if_text_shorter PASSED
+tests/test_solution.py::TestSentenceChunker::test_chunks_are_strings PASSED
+tests/test_solution.py::TestSentenceChunker::test_respects_max_sentences PASSED
+tests/test_solution.py::TestSentenceChunker::test_returns_list PASSED
+tests/test_solution.py::TestSentenceChunker::test_single_sentence_max_gives_many_chunks PASSED
+tests/test_solution.py::TestRecursiveChunker::test_chunks_within_size_when_possible PASSED
+tests/test_solution.py::TestRecursiveChunker::test_empty_separators_falls_back_gracefully PASSED
+tests/test_solution.py::TestRecursiveChunker::test_handles_double_newline_separator PASSED
+tests/test_solution.py::TestRecursiveChunker::test_returns_list PASSED
+tests/test_solution.py::TestEmbeddingStore::test_add_documents_increases_size PASSED
+tests/test_solution.py::TestEmbeddingStore::test_add_more_increases_further PASSED
+tests/test_solution.py::TestEmbeddingStore::test_initial_size_is_zero PASSED
+tests/test_solution.py::TestEmbeddingStore::test_search_results_have_content_key PASSED
+tests/test_solution.py::TestEmbeddingStore::test_search_results_have_score_key PASSED
+tests/test_solution.py::TestEmbeddingStore::test_search_results_sorted_by_score_descending PASSED
+tests/test_solution.py::TestEmbeddingStore::test_search_returns_at_most_top_k PASSED
+tests/test_solution.py::TestEmbeddingStore::test_search_returns_list PASSED
+tests/test_solution.py::TestKnowledgeBaseAgent::test_answer_non_empty PASSED
+tests/test_solution.py::TestKnowledgeBaseAgent::test_answer_returns_string PASSED
+tests/test_solution.py::TestComputeSimilarity::test_identical_vectors_return_1 PASSED
+tests/test_solution.py::TestComputeSimilarity::test_opposite_vectors_return_minus_1 PASSED
+tests/test_solution.py::TestComputeSimilarity::test_orthogonal_vectors_return_0 PASSED
+tests/test_solution.py::TestComputeSimilarity::test_zero_vector_returns_0 PASSED
+tests/test_solution.py::TestCompareChunkingStrategies::test_counts_are_positive PASSED
+tests/test_solution.py::TestCompareChunkingStrategies::test_each_strategy_has_count_and_avg_length PASSED
+tests/test_solution.py::TestCompareChunkingStrategies::test_returns_three_strategies PASSED
+tests/test_solution.py::TestEmbeddingStoreSearchWithFilter::test_filter_by_department PASSED
+tests/test_solution.py::TestEmbeddingStoreSearchWithFilter::test_no_filter_returns_all_candidates PASSED
+tests/test_solution.py::TestEmbeddingStoreSearchWithFilter::test_returns_at_most_top_k PASSED
+tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_reduces_collection_size PASSED
+tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_false_for_nonexistent_doc PASSED
+tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_true_for_existing_doc PASSED
+
+42 passed in 0.06s
 ```
 
-**Số tests pass:** __ / __
+**Số tests pass:** 42 / 42
 
 ---
 
