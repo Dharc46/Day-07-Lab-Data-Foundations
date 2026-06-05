@@ -125,14 +125,15 @@ class ParentChildChunker:
 
 ### So Sánh Với Thành Viên Khác
 
-| Thành viên | Strategy | Retrieval Score (/10) | Điểm mạnh | Điểm yếu |
-|-----------|----------|----------------------|-----------|----------|
-| Tôi | | | | |
-| [Tên] | | | | |
-| [Tên] | | | | |
+| Thành viên | Strategy | Avg Score | Top-3 Relevant | Điểm mạnh | Điểm yếu |
+|-----------|----------|-----------|----------------|-----------|----------|
+| Tôi (Nguyễn Tài Khoa) | ParentChildChunker (child=3 câu, parent=Điều) | 0.6581 | 5/5 | Child chunk chính xác, parent giữ trọn Điều để trả context đầy đủ | Q2 score thấp (0.5313), child có thể quá nhỏ cho query mơ hồ |
+| Nguyễn Thanh Đạt | Article-level + lexical/article boost | score >1.0 (combined) | 5/5 | Top-1 đúng 5/5, có boost domain-specific giúp Q2 hit đúng Điều 1 | Cần custom boost phức tạp, khó tái sử dụng cho domain khác |
+| Nguyễn Khôi Lâm | Recursive(1800) + metadata filter | 0.6466 | 4/5 (Q2 partial) | Metadata filter theo `law_no` thu hẹp search space hiệu quả, chunk lớn giữ context | Chunk 1800 chars quá lớn, Q2 retrieve đúng văn bản nhưng lệch điều khoản gold |
+| Mai Văn Thuyên | RecursiveChunker(500) | 0.6502 | 5/5 | Đơn giản, giữ cấu trúc đoạn tốt | Chunk không theo đơn vị Điều, thiếu context khi điều khoản dài |
 
 **Strategy nào tốt nhất cho domain này? Tại sao?**
-> *Viết 2-3 câu:*
+> Article-level chunking (Nguyễn Thanh Đạt) cho kết quả tốt nhất vì tách đúng theo đơn vị tham chiếu pháp lý tự nhiên (Điều). ParentChildChunker của tôi là bước tiến từ baseline vì vừa embed chính xác (child nhỏ) vừa giữ context (parent = Điều), nhưng article-level + lexical boost cho top-1 accuracy cao hơn nhờ kết hợp semantic và lexical matching.
 
 ---
 
@@ -218,14 +219,14 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_tr
 
 | Pair | Sentence A | Sentence B | Dự đoán | Actual Score | Đúng? |
 |------|-----------|-----------|---------|--------------|-------|
-| 1 | | | high / low | | |
-| 2 | | | high / low | | |
-| 3 | | | high / low | | |
-| 4 | | | high / low | | |
-| 5 | | | high / low | | |
+| 1 | Dữ liệu cá nhân nhạy cảm cần được bảo vệ nghiêm ngặt | Thông tin riêng tư nhạy cảm phải được bảo mật chặt chẽ | high | 0.8442 | Đúng |
+| 2 | Chữ ký điện tử có giá trị pháp lý tương đương chữ ký tay | Hợp đồng điện tử được pháp luật công nhận hiệu lực | high | 0.5902 | Đúng |
+| 3 | Mức phạt vi phạm bảo vệ dữ liệu cá nhân tối đa 03 tỷ đồng | Thời tiết hôm nay nắng đẹp, nhiệt độ khoảng 30 độ C | low | 0.0870 | Đúng |
+| 4 | Quyền của chủ thể dữ liệu bao gồm quyền được biết và quyền đồng ý | Quyền riêng tư của người dùng bao gồm quyền truy cập và từ chối | high | 0.5832 | Đúng |
+| 5 | Doanh nghiệp nước ngoài xử lý dữ liệu phải tuân thủ luật Việt Nam | Công ty nước ngoài thu thập thông tin người dùng Việt phải theo quy định pháp luật | high | 0.6239 | Đúng |
 
 **Kết quả nào bất ngờ nhất? Điều này nói gì về cách embeddings biểu diễn nghĩa?**
-> *Viết 2-3 câu:*
+> Pair 2 (0.5902) thấp hơn kỳ vọng — "chữ ký điện tử" và "hợp đồng điện tử" đều thuộc domain giao dịch điện tử nhưng model nhận ra đây là 2 khái niệm pháp lý khác nhau (chữ ký vs hợp đồng), không chỉ match keyword "điện tử". Điều này cho thấy Vietnamese_Embedding biểu diễn semantic meaning chứ không chỉ dựa trên từ vựng chung — nó phân biệt được ý nghĩa cụ thể ngay cả khi các câu cùng domain.
 
 ---
 
@@ -260,13 +261,13 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 ## 7. What I Learned (5 điểm — Demo)
 
 **Điều hay nhất tôi học được từ thành viên khác trong nhóm:**
-> *Viết 2-3 câu:*
+> Nguyễn Thanh Đạt kết hợp lexical boost với semantic search — không chỉ dựa vào embedding mà còn tăng điểm cho chunk có heading chứa keyword query. Điều này giải quyết được weakness của pure semantic search khi query paraphrase khác từ vựng với văn bản gốc (ví dụ "doanh nghiệp nước ngoài" vs "cơ quan, tổ chức, cá nhân nước ngoài"). Mai Văn Thuyên cho thấy RecursiveChunker đơn giản vẫn đạt kết quả tốt (5/5 relevant) nếu chunk_size phù hợp.
 
 **Điều hay nhất tôi học được từ nhóm khác (qua demo):**
-> *Viết 2-3 câu:*
+> *Chờ demo để điền.*
 
 **Nếu làm lại, tôi sẽ thay đổi gì trong data strategy?**
-> *Viết 2-3 câu:*
+> Tôi sẽ bổ sung metadata `article_number` và `chapter` ngay từ bước loading, thay vì chỉ có `doc_type`/`year`/`topic`. Metadata chi tiết hơn giúp filter trước khi search semantic, giảm false positive. Ngoài ra sẽ thêm lexical/BM25 score kết hợp với cosine similarity để xử lý tốt hơn các query có từ khóa pháp lý cụ thể.
 
 ---
 
@@ -274,12 +275,12 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 
 | Tiêu chí | Loại | Điểm tự đánh giá |
 |----------|------|-------------------|
-| Warm-up | Cá nhân | / 5 |
-| Document selection | Nhóm | / 10 |
-| Chunking strategy | Nhóm | / 15 |
-| My approach | Cá nhân | / 10 |
-| Similarity predictions | Cá nhân | / 5 |
-| Results | Cá nhân | / 10 |
-| Core implementation (tests) | Cá nhân | / 30 |
-| Demo | Nhóm | / 5 |
-| **Tổng** | | **/ 100** |
+| Warm-up | Cá nhân | 5 / 5 |
+| Document selection | Nhóm | 10 / 10 |
+| Chunking strategy | Nhóm | 15 / 15 |
+| My approach | Cá nhân | 10 / 10 |
+| Similarity predictions | Cá nhân | 5 / 5 |
+| Results | Cá nhân | 10 / 10 |
+| Core implementation (tests) | Cá nhân | 30 / 30 |
+| Demo | Nhóm |  / 5 |
+| **Tổng** | | ** / 100** |
