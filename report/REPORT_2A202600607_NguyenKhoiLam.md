@@ -1,7 +1,7 @@
 # Báo Cáo Lab 7: Embedding & Vector Store
 
-**Họ tên:** [Tên sinh viên]  
-**Nhóm:** [Tên nhóm]  
+**Họ tên:** Nguyễn Khởi Lâm  
+**Nhóm:** Nhóm E5  
 **Ngày:** 2026-06-05
 
 ---
