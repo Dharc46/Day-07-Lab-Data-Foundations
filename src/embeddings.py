@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+import os
 
 LOCAL_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
@@ -25,6 +26,9 @@ class MockEmbedder:
         norm = math.sqrt(sum(value * value for value in vector)) or 1.0
         return [value / norm for value in vector]
 
+    def embed_many(self, texts: list[str]) -> list[list[float]]:
+        return [self(text) for text in texts]
+
 
 class LocalEmbedder:
     """Sentence Transformers-backed local embedder."""
@@ -42,6 +46,13 @@ class LocalEmbedder:
             return embedding.tolist()
         return [float(value) for value in embedding]
 
+    def embed_many(self, texts: list[str]) -> list[list[float]]:
+        batch_size = int(os.getenv("LOCAL_EMBEDDING_BATCH_SIZE", "4"))
+        embeddings = self.model.encode(texts, normalize_embeddings=True, batch_size=batch_size)
+        if hasattr(embeddings, "tolist"):
+            return embeddings.tolist()
+        return [[float(value) for value in embedding] for embedding in embeddings]
+
 
 class OpenAIEmbedder:
     """OpenAI embeddings API-backed embedder."""
@@ -56,6 +67,10 @@ class OpenAIEmbedder:
     def __call__(self, text: str) -> list[float]:
         response = self.client.embeddings.create(model=self.model_name, input=text)
         return [float(value) for value in response.data[0].embedding]
+
+    def embed_many(self, texts: list[str]) -> list[list[float]]:
+        response = self.client.embeddings.create(model=self.model_name, input=texts)
+        return [[float(value) for value in item.embedding] for item in response.data]
 
 
 _mock_embed = MockEmbedder()
