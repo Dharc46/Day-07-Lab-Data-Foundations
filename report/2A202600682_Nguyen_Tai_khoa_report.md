@@ -25,7 +25,7 @@
 - Tại sao khác: Hoàn toàn khác domain, không có từ hay ý nghĩa chung
 
 **Tại sao cosine similarity được ưu tiên hơn Euclidean distance cho text embeddings?**
-> *Viết 1-2 câu:* Vì các đoạn văn có độ dài và ngắn khác nhau và euclidean distance sẽ không nhận ra sự tương đồng chữa 1 bài văn và 1 bản tóm tắt dù chúng dùng cùng nội dung
+> *Viết 1-2 câu:* Vì các đoạn văn có độ dài và ngắn khác nhau và euclidean distance sẽ không nhận ra sự tương đồng giữa 1 bài văn và 1 bản tóm tắt dù chúng dùng cùng nội dung
 
 ### Chunking Math (Ex 1.2)
 
@@ -261,7 +261,7 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 ## 7. What I Learned (5 điểm — Demo)
 
 **Điều hay nhất tôi học được từ thành viên khác trong nhóm:**
-> Nguyễn Thanh Đạt kết hợp lexical boost với semantic search — không chỉ dựa vào embedding mà còn tăng điểm cho chunk có heading chứa keyword query. Điều này giải quyết được weakness của pure semantic search khi query paraphrase khác từ vựng với văn bản gốc (ví dụ "doanh nghiệp nước ngoài" vs "cơ quan, tổ chức, cá nhân nước ngoài"). Mai Văn Thuyên cho thấy RecursiveChunker đơn giản vẫn đạt kết quả tốt (5/5 relevant) nếu chunk_size phù hợp.
+> Nguyễn Khôi Lâm kết hợp lexical boost với semantic search — không chỉ dựa vào embedding mà còn tăng điểm cho chunk có heading chứa keyword query. Điều này giải quyết được weakness của pure semantic search khi query paraphrase khác từ vựng với văn bản gốc (ví dụ "doanh nghiệp nước ngoài" vs "cơ quan, tổ chức, cá nhân nước ngoài"). Nguyễn Thanh Đạt cho thấy RecursiveChunker(1800) kết hợp metadata filter (topic, law_no, doc_type) thu hẹp search space hiệu quả. Mai Văn Thuyên cho thấy RecursiveChunker đơn giản vẫn đạt kết quả tốt (5/5 relevant) nếu chunk_size phù hợp.
 
 **Điều hay nhất tôi học được từ nhóm khác (qua demo):**
 > Nhóm chọn slide buổi học là chủ đề, dùng enriching để lấy add thêm metadata xem có đồ thị code.. chunking theo slide thì sẽ có vấn đề khi có 2 slide topic giống nhau, thì thêm filter. Có nhóm làm về luật zalo thì có gợi ý là dùng recursive có thể phù hợp với luật vì ta cần độ chính xác cao. 
@@ -281,5 +281,5 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 | Similarity predictions | Cá nhân | 5 / 5 |
 | Results | Cá nhân | 10 / 10 |
 | Core implementation (tests) | Cá nhân | 30 / 30 |
-| Demo | Nhóm |  / 5 |
-| **Tổng** | | ** / 100** |
+| Demo | Nhóm | 3 / 5 |
+| **Tổng** | | **98 / 100** |
