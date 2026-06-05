@@ -1,0 +1,148 @@
+=== CHUNKING STRATEGY COMPARISON ===
+
+Document: 13_2023_ND-CP.md
+  Strategy: fixed_size
+    Chunk Count: 152
+    Avg Length: 497.27
+  Strategy: by_sentences
+    Chunk Count: 215
+    Avg Length: 314.82
+  Strategy: recursive
+    Chunk Count: 186
+    Avg Length: 364.38
+
+Document: 2018_775 + 776_24-2018-QH14.md
+  Strategy: fixed_size
+    Chunk Count: 142
+    Avg Length: 499.16
+  Strategy: by_sentences
+    Chunk Count: 130
+    Avg Length: 489.58
+  Strategy: recursive
+    Chunk Count: 181
+    Avg Length: 351.38
+
+Document: 2023_867 + 868_20-2023-QH15.md
+  Strategy: fixed_size
+    Chunk Count: 128
+    Avg Length: 496.93
+  Strategy: by_sentences
+    Chunk Count: 155
+    Avg Length: 368.02
+  Strategy: recursive
+    Chunk Count: 170
+    Avg Length: 335.43
+
+Document: 356_2025_ND-CP.md
+  Strategy: fixed_size
+    Chunk Count: 243
+    Avg Length: 499.99
+  Strategy: by_sentences
+    Chunk Count: 247
+    Avg Length: 440.80
+  Strategy: recursive
+    Chunk Count: 307
+    Avg Length: 354.97
+
+Document: 91_2025_QH15.md
+  Strategy: fixed_size
+    Chunk Count: 120
+    Avg Length: 496.55
+  Strategy: by_sentences
+    Chunk Count: 131
+    Avg Length: 408.09
+  Strategy: recursive
+    Chunk Count: 154
+    Avg Length: 346.99
+
+=== RUNNING BENCHMARK QUERIES ===
+Computed and cached embeddings to disk.
+Indexed 998 chunks in EmbeddingStore.
+
+--- Query 1: Dữ liệu cá nhân nhạy cảm bao gồm những gì? ---
+Using filter: {'year': 2025, 'doc_type': 'nghi_dinh'}
+Top-1 Chunk (Score: 0.6601, Doc: 356_2025_ND-CP.md_chunk_9):
+   #### Điều 4. Danh mục dữ liệu cá nhân nhạy cảm
+1. Dữ liệu cá nhân nhạy cảm bao gồm:
+   * a) Dữ liệu tiết lộ nguồn gốc chủng tộc, nguồn gốc dân tộc;
+   * b) Quan điểm về chính trị, tôn giáo, tín ngưỡng;
+   * c) Thông tin về đời sống riêng tư, bí mật c...
+
+Top-2 Chunk (Score: 0.5830, Doc: 356_2025_ND-CP.md_chunk_259):
+   | **3.2** | **Dữ liệu cá nhân nhạy cảm** *(đánh dấu [x] vào loại dữ liệu cá nhân quy định)*:<br>[ ] Dữ liệu tiết lộ nguồn gốc chủng tộc, dân tộc<br>[ ] Quan điểm chính trị<br>[ ] Quan điểm tôn giáo, tín ngưỡng<br>[ ] Đời sống riêng tư, bí mật cá nhân...
+
+Top-3 Chunk (Score: 0.5830, Doc: 356_2025_ND-CP.md_chunk_288):
+   | **3.2** | **Dữ liệu cá nhân nhạy cảm** *(đánh dấu [x] vào loại dữ liệu cá nhân quy định)*:<br>[ ] Dữ liệu tiết lộ nguồn gốc chủng tộc, dân tộc<br>[ ] Quan điểm chính trị<br>[ ] Quan điểm tôn giáo, tín ngưỡng<br>[ ] Đời sống riêng tư, bí mật cá nhân...
+
+Agent Answer: Tác nhân RAG đã tìm kiếm và trả lời thành công dựa trên ngữ cảnh được cung cấp.
+
+--- Query 2: Trách nhiệm của doanh nghiệp nước ngoài xử lý dữ liệu người Việt? ---
+Using filter: {'year': 2025, 'doc_type': 'luat'}
+Top-1 Chunk (Score: 0.5310, Doc: 91_2025_QH15.md_chunk_141):
+   * i) Phối hợp với Bộ Công an, cơ quan nhà nước có thẩm quyền trong bảo vệ dữ liệu cá nhân, cung cấp thông tin phục vụ điều tra, xử lý hành vi vi phạm pháp luật về bảo vệ dữ liệu cá nhân;
+   * k) Thực hiện các trách nhiệm khác theo quy định của Luậ...
+
+Top-2 Chunk (Score: 0.4903, Doc: 91_2025_QH15.md_chunk_140):
+   * đ) Lựa chọn bên xử lý dữ liệu cá nhân phù hợp để xử lý dữ liệu cá nhân;
+   * e) Bảo đảm các quyền của chủ thể dữ liệu cá nhân theo quy định tại Điều 4 của Luật này;
+   * g) Chịu trách nhiệm trước chủ thể dữ liệu cá nhân về các thiệt hại do quá t...
+
+Top-3 Chunk (Score: 0.4649, Doc: 91_2025_QH15.md_chunk_129):
+   5. Cơ quan, tổ chức, cá nhân thực hiện ghi âm, ghi hình, xử lý dữ liệu cá nhân thu được từ ghi âm, ghi hình trong các trường hợp quy định tại khoản 1 Điều này có trách nhiệm bảo vệ dữ liệu cá nhân theo quy định của Luật này và quy định khác của pháp...
+
+Agent Answer: Tác nhân RAG đã tìm kiếm và trả lời thành công dựa trên ngữ cảnh được cung cấp.
+
+--- Query 3: Chữ ký điện tử có giá trị pháp lý không? ---
+Using filter: {'year': 2023, 'doc_type': 'luat'}
+Top-1 Chunk (Score: 0.6159, Doc: 2023_867 + 868_20-2023-QH15.md_chunk_65):
+   #### Điều 23. Giá trị pháp lý của chữ ký điện tử
+1. Chữ ký điện tử không bị phủ nhận giá trị pháp lý chỉ vì được thể hiện dưới dạng chữ ký điện tử.
+2. Chữ ký điện tử chuyên dùng bảo đảm an toàn hoặc chữ ký số có giá trị pháp lý tương đương chữ ký của...
+
+Top-2 Chunk (Score: 0.5164, Doc: 2023_867 + 868_20-2023-QH15.md_chunk_59):
+   #### Điều 22. Chữ ký điện tử
+1. Chữ ký điện tử được phân loại theo phạm vi sử dụng bao gồm:
+   * a) Chữ ký điện tử chuyên dùng là chữ ký điện tử do cơ quan, tổ chức tạo lập, sử dụng riêng cho hoạt động của cơ quan, tổ chức đó phù hợp với chức năng, n...
+
+Top-3 Chunk (Score: 0.5037, Doc: 2023_867 + 868_20-2023-QH15.md_chunk_52):
+   #### Điều 19. Giá trị pháp lý của chứng thư điện tử
+1. Thông tin trong chứng thư điện tử có giá trị pháp lý khi đáp ứng đủ các yêu cầu sau đây:
+   * a) Chứng thư điện tử được ký bằng chữ ký số của cơ quan, tổ chức phát hành theo quy định của Luật này...
+
+Agent Answer: Tác nhân RAG đã tìm kiếm và trả lời thành công dựa trên ngữ cảnh được cung cấp.
+
+--- Query 4: Mức phạt vi phạm bảo vệ dữ liệu cá nhân? ---
+Using filter: {'year': 2025, 'doc_type': 'luat'}
+Top-1 Chunk (Score: 0.6906, Doc: 91_2025_QH15.md_chunk_31):
+   5. Mức phạt tiền tối đa trong xử phạt vi phạm hành chính đối với các hành vi vi phạm khác trong lĩnh vực bảo vệ dữ liệu cá nhân là 03 tỷ đồng.
+6. Mức phạt tiền tối đa quy định tại các khoản 3, 4 và 5 Điều này được áp dụng đối với tổ chức; cá nhân thự...
+
+Top-2 Chunk (Score: 0.6359, Doc: 91_2025_QH15.md_chunk_28):
+   2. Việc xử phạt vi phạm hành chính trong lĩnh vực bảo vệ dữ liệu cá nhân thực hiện theo quy định tại các khoản 3, 4, 5, 6 và 7 Điều này và pháp luật về xử lý vi phạm hành chính....
+
+Top-3 Chunk (Score: 0.6207, Doc: 91_2025_QH15.md_chunk_27):
+   #### Điều 8. Xử lý vi phạm pháp luật về bảo vệ dữ liệu cá nhân
+1. Tổ chức, cá nhân có hành vi vi phạm quy định của Luật này và quy định khác của pháp luật có liên quan đến bảo vệ dữ liệu cá nhân thì tùy theo tính chất, mức độ, hậu quả của hành vi vi...
+
+Agent Answer: Tác nhân RAG đã tìm kiếm và trả lời thành công dựa trên ngữ cảnh được cung cấp.
+
+--- Query 5: Quyền của chủ thể dữ liệu cá nhân gồm những gì? ---
+Using filter: {'year': 2025, 'doc_type': 'luat'}
+Top-1 Chunk (Score: 0.7535, Doc: 91_2025_QH15.md_chunk_13):
+   #### Điều 4. Quyền và nghĩa vụ của chủ thể dữ liệu cá nhân
+1. Quyền của chủ thể dữ liệu cá nhân bao gồm:
+   * a) Được biết về hoạt động xử lý dữ liệu cá nhân;
+   * b) Đồng ý hoặc không đồng ý, yêu cầu rút lại sự đồng ý cho phép xử lý dữ liệu cá nhân;...
+
+Top-2 Chunk (Score: 0.6671, Doc: 91_2025_QH15.md_chunk_14):
+   * đ) Khiếu nại, tố cáo, khởi kiện, yêu cầu bồi thường thiệt hại theo quy định của pháp luật;
+   * e) Yêu cầu cơ quan có thẩm quyền hoặc cơ quan, tổ chức, cá nhân liên quan đến xử lý dữ liệu cá nhân thực hiện các biện pháp, giải pháp bảo vệ dữ liệu...
+
+Top-3 Chunk (Score: 0.6400, Doc: 91_2025_QH15.md_chunk_36):
+   #### Điều 10. Yêu cầu rút lại sự đồng ý, yêu cầu hạn chế xử lý dữ liệu cá nhân
+1. Chủ thể dữ liệu cá nhân có quyền yêu cầu rút lại sự đồng ý cho phép xử lý dữ liệu cá nhân, yêu cầu hạn chế xử lý dữ liệu cá nhân của mình khi có nghi ngờ phạm vi, mục đ...
+
+Agent Answer: Tác nhân RAG đã tìm kiếm và trả lời thành công dựa trên ngữ cảnh được cung cấp.
+khiển và giám sát tự động tại công trình quan trọng...
+
+Agent Answer: Tác nhân RAG đã tìm kiếm và trả lời thành công dựa trên ngữ cảnh được cung cấp.
